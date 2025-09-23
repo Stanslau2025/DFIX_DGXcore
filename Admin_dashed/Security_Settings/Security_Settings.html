@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFIX DGXcore - Security Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+:root {
+    --primary: #ff00cc;
+    --secondary: #3333ff;
+    --accent: #00ffcc;
+    --dark: #0a0a0a;
+    --darker: #050505;
+    --light: #f8f8f8;
+    --success: #00cc66;
+    --warning: #ffcc00;
+    --danger: #ff3366;
+    --quantum: #00ffff;
+    --neural: #ff00ff;
+    --hologram: rgba(0, 255, 255, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+    color: var(--light);
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+    font-size: 14px;
+}
+
+/* Prevent scrolling when security screen is active */
+body.security-access-active {
+    overflow: hidden;
+    height: 100vh;
+    position: fixed;
+    width: 100%;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 0, 204, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(51, 51, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 255, 204, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, var(--quantum), var(--neural), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+/* Security Access Screen - Mobile Optimized */
+.security-access-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 5, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(20px);
+    padding: 15px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Enable scrolling within the security screen */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.security-access-container {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(20, 20, 20, 0.9) 100%);
+    border-radius: 15px;
+    padding: 30px 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--hologram);
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.2),
+        inset 0 0 30px rgba(0, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin: auto; /* Center vertically even when scrolling */
+}
+
+.security-access-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent, 
+        rgba(0, 255, 255, 0.1), 
+        transparent 30%
+    );
+    animation: rotate 10s linear infinite;
+    z-index: -1;
+}
+
+@keyframes rotate {
+    100% { transform: rotate(360deg); }
+}
+
+.security-access-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--quantum);
+    filter: drop-shadow(0 0 8px var(--quantum));
+    padding-top: 30px;
+}
+
+.security-access-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.security-access-subtitle {
+    opacity: 0.8;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.security-access-step {
+    display: none;
+}
+
+.security-access-step.active {
+    display: block;
+    animation: hologramAppear 0.5s ease;
+}
+
+@keyframes hologramAppear {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+    }
+}
+
+.security-access-field {
+    margin-bottom: 20px;
+}
+
+.security-access-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--quantum);
+    font-size: 14px;
+}
+
+.security-access-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--hologram);
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.security-access-input:focus {
+    outline: none;
+    border-color: var(--quantum);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 480px) {
+    .security-access-container {
+        padding: 25px 15px;
+        border-radius: 12px;
+        max-width: 350px;
+        margin: 20px auto; /* Add margin for better spacing when scrolling */
+    }
+    
+    .security-access-icon {
+        font-size: 45px;
+        padding-top: 20px;
+    }
+    
+    .security-access-title {
+        font-size: 22px;
+    }
+    
+    .security-access-subtitle {
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+}
+
+@media (max-width: 360px) {
+    .security-access-container {
+        padding: 20px 12px;
+        max-width: 320px;
+        margin: 15px auto;
+    }
+    
+    .security-access-icon {
+        font-size: 40px;
+    }
+    
+    .security-access-title {
+        font-size: 20px;
+    }
+}
+
+/* Prevent body scroll when security screen is visible */
+.security-access-active {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Quantum Input Styles */
+.quantum-input-container {
+    position: relative;
+}
+
+.quantum-input-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--quantum);
+    font-size: 18px;
+}
+
+.quantum-input-container input {
+    padding-left: 50px;
+}
+
+/* Neural Scan Styles */
+.neural-scan-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid var(--hologram);
+}
+
+.neural-scan-visualization {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    height: 60px;
+    align-items: center;
+}
+
+.neural-wave {
+    flex: 1;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--neural), transparent);
+    margin: 0 10px;
+    border-radius: 2px;
+    animation: neuralPulse 2s ease-in-out infinite;
+}
+
+.neural-wave:nth-child(1) { animation-delay: 0s; }
+.neural-wave:nth-child(2) { animation-delay: 0.3s; }
+.neural-wave:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes neuralPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(2); }
+}
+
+.neural-scan-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--neural), var(--primary));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.neural-scan-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+}
+
+/* Bio-Cryptic Verification */
+.bio-cryptic-verification {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid var(--hologram);
+    margin-bottom: 30px;
+}
+
+.verification-title {
+    color: var(--quantum);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dna-sequence {
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.dna-strand {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.base-pair {
+    padding: 8px 15px;
+    background: rgba(0, 255, 255, 0.2);
+    border-radius: 5px;
+    font-family: monospace;
+    font-weight: 600;
+    animation: dnaGlow 3s ease-in-out infinite;
+}
+
+@keyframes dnaGlow {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+.verification-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.verification-field {
+    margin-bottom: 0;
+}
+
+/* Security Access Actions */
+.security-access-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.security-access-btn {
+    padding: 12px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s;
+    flex: 1;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid var(--hologram);
+}
+
+.btn-next {
+    background: linear-gradient(135deg, var(--quantum), var(--neural));
+    color: white;
+}
+
+.security-access-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
+}
+
+/* Security Command Center */
+.security-command-center {
+    display: none;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+}
+
+.command-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--hologram);
+}
+
+.command-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.command-logo i {
+    color: var(--quantum);
+    font-size: 28px;
+}
+
+.command-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--quantum);
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--quantum);
+    animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.command-exit {
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid var(--danger);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.command-exit:hover {
+    background: var(--danger);
+    transform: translateY(-2px);
+}
+
+.command-container {
+    padding: 120px 5% 50px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* System Overview */
+.system-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.overview-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid var(--hologram);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+}
+
+.overview-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+}
+
+.overview-icon {
+    font-size: 40px;
+    color: var(--quantum);
+    margin-bottom: 15px;
+}
+
+.overview-content h3 {
+    font-size: 16px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.overview-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--quantum);
+    margin-bottom: 5px;
+}
+
+.overview-status {
+    font-size: 14px;
+    color: var(--success);
+}
+
+/* Security Tabs */
+.security-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.security-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--hologram);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.security-tab.active {
+    background: linear-gradient(135deg, var(--quantum), var(--neural));
+    border-color: transparent;
+}
+
+.security-tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Security Content */
+.security-content {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
+    border: 1px solid var(--hologram);
+    backdrop-filter: blur(10px);
+}
+
+.security-tab-content {
+    display: none;
+    padding: 30px;
+    animation: tabSlide 0.3s ease;
+}
+
+@keyframes tabSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.security-tab-content.active {
+    display: block;
+}
+
+.security-section h3 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: var(--quantum);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Control Panel */
+.control-panel {
+    display: grid;
+    gap: 30px;
+}
+
+.control-group {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid var(--hologram);
+}
+
+.control-group h4 {
+    color: var(--quantum);
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.control-inputs {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.control-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--hologram);
+    border-radius: 8px;
+    color: white;
+}
+
+.control-btn {
+    padding: 10px 20px;
+    background: rgba(0, 255, 255, 0.2);
+    border: 1px solid var(--quantum);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-btn:hover {
+    background: var(--quantum);
+    transform: translateY(-2px);
+}
+
+.btn-save {
+    background: rgba(0, 204, 102, 0.2);
+    border-color: var(--success);
+}
+
+.btn-save:hover {
+    background: var(--success);
+}
+
+.btn-warning {
+    background: rgba(255, 204, 0, 0.2);
+    border-color: var(--warning);
+}
+
+.btn-warning:hover {
+    background: var(--warning);
+}
+
+/* Privilege Grid */
+.privilege-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.privilege-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.privilege-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+/* Profile Editor */
+.profile-editor {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.profile-preview {
+    text-align: center;
+}
+
+.profile-preview img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--quantum);
+    margin-bottom: 15px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-input {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--hologram);
+    border-radius: 8px;
+    color: white;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+
+/* Monitor Grid */
+.monitor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.monitor-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid var(--hologram);
+}
+
+.monitor-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.monitor-card h4 {
+    color: var(--quantum);
+    margin-bottom: 15px;
+}
+
+.activity-feed, .security-events {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.activity-item, .event-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+.event-item.warning {
+    border-left: 3px solid var(--warning);
+}
+
+.event-item.success {
+    border-left: 3px solid var(--success);
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.metric {
+    text-align: center;
+}
+
+.metric-label {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--quantum);
+    margin-bottom: 10px;
+}
+
+.metric-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.metric-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--quantum), var(--neural));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+/* Quantum Controls */
+.quantum-controls {
+    display: grid;
+    gap: 30px;
+}
+
+.quantum-setting {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid var(--hologram);
+}
+
+.quantum-setting h4 {
+    color: var(--quantum);
+    margin-bottom: 15px;
+}
+
+.quantum-slider {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.encryption-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.protocol-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.protocol-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hardening-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.quantum-btn {
+    padding: 12px 20px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid var(--quantum);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantum-btn:hover {
+    background: var(--quantum);
+    transform: translateY(-2px);
+}
+
+/* Security Notification */
+.security-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, var(--quantum), var(--neural));
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+.security-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .security-access-container {
+        padding: 30px 20px;
+    }
+    
+    .security-access-actions {
+        flex-direction: column;
+    }
+    
+    .command-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .system-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .security-tabs {
+        flex-direction: column;
+    }
+    
+    .control-inputs {
+        flex-direction: column;
+    }
+    
+    .monitor-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-editor {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .hardening-actions {
+        flex-direction: column;
+    }
+    
+    .verification-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .command-container {
+        padding: 140px 3% 30px;
+    }
+    
+    .security-tab-content {
+        padding: 20px 15px;
+    }
+    
+    .security-notification {
+        right: 15px;
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+
+
+@keyframes quantumPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7); }
+    50% { box-shadow: 0 0 0 20px rgba(0, 255, 255, 0); }
+}
+</style>
+
+
+</head>
+<body>
+    <!-- Security Access Screen -->
+    <div class="security-access-screen" id="security-access-screen">
+        <div class="security-access-container">
+            <div class="security-access-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 class="security-access-title gradient-text">Security Command Center</h2>
+            <p class="security-access-subtitle">Quantum-level authentication required</p>
+            
+            <!-- Step 1: Quantum Authentication -->
+            <div class="security-access-step active" id="access-step1">
+                <div class="security-access-field">
+                    <label class="security-access-label">Quantum Signature</label>
+                    <div class="quantum-input-container">
+                        <i class="fas fa-atom"></i>
+                        <input type="password" class="security-access-input" id="quantum-signature" placeholder="Enter quantum signature">
+                    </div>
+                </div>
+                <div class="security-access-field">
+                    <label class="security-access-label">Neural Pattern</label>
+                    <div class="neural-scan-container">
+                        <div class="neural-scan-visualization">
+                            <div class="neural-wave" id="neural-wave-1"></div>
+                            <div class="neural-wave" id="neural-wave-2"></div>
+                            <div class="neural-wave" id="neural-wave-3"></div>
+                        </div>
+                        <button class="neural-scan-btn" id="neural-scan-btn" onclick="initiateNeuralScan()">
+                            <i class="fas fa-brain"></i> Initiate Neural Scan
+                        </button>
+                    </div>
+                </div>
+                <div class="security-access-actions">
+                    <button class="security-access-btn btn-cancel" onclick="cancelSecurityAccess()">Abort</button>
+                    <button class="security-access-btn btn-next" onclick="nextAccessStep()">Quantum Verification</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Bio-Cryptic Verification -->
+            <div class="security-access-step" id="access-step2">
+                <div class="bio-cryptic-verification">
+                    <h3 class="verification-title"><i class="fas fa-dna"></i> Bio-Cryptic Sequence</h3>
+                    <div class="dna-sequence" id="dna-sequence">
+                        <div class="dna-strand">
+                            <span class="base-pair">A-T</span>
+                            <span class="base-pair">G-C</span>
+                            <span class="base-pair">T-A</span>
+                            <span class="base-pair">C-G</span>
+                            <span class="base-pair">A-T</span>
+                        </div>
+                    </div>
+                    <div class="verification-grid">
+                        <div class="verification-field">
+                            <label class="verification-label">Sequence Pattern</label>
+                            <input type="text" class="verification-input" id="sequence-pattern" placeholder="Enter sequence pattern">
+                        </div>
+                        <div class="verification-field">
+                            <label class="verification-label">Cryptic Key</label>
+                            <input type="password" class="verification-input" id="cryptic-key" placeholder="Enter cryptic key">
+                        </div>
+                    </div>
+                </div>
+                <div class="security-access-actions">
+                    <button class="security-access-btn btn-cancel" onclick="prevAccessStep()">Back</button>
+                    <button class="security-access-btn btn-next" onclick="verifySecurityAccess()">Access Command Center</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Command Center -->
+    <div class="security-command-center" id="security-command-center">
+        <header class="command-header">
+            <div class="command-logo">
+                <i class="fas fa-shield-virus"></i>
+                <span class="gradient-text">DFIX Security Command</span>
+            </div>
+            <div class="command-status">
+                <div class="status-indicator active"></div>
+                <span>Quantum Secure</span>
+            </div>
+            <button class="command-exit" onclick="exitCommandCenter()">
+                <i class="fas fa-times"></i> Lock System
+            </button>
+        </header>
+
+        <div class="command-container">
+            <!-- System Overview -->
+            <div class="system-overview">
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h3>Admin Accounts</h3>
+                        <div class="overview-value" id="admin-count">0</div>
+                        <div class="overview-status">Active</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-microphone-alt"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h3>Artist Profiles</h3>
+                        <div class="overview-value" id="artist-count">0</div>
+                        <div class="overview-status">Registered</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h3>Security Level</h3>
+                        <div class="overview-value">Quantum</div>
+                        <div class="overview-status">Maximum</div>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h3>Platform Health</h3>
+                        <div class="overview-value">100%</div>
+                        <div class="overview-status">Optimal</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tabs -->
+            <div class="security-tabs">
+                <button class="security-tab active" data-tab="admin-management">
+                    <i class="fas fa-user-cog"></i> Admin Management
+                </button>
+                <button class="security-tab" data-tab="artist-control">
+                    <i class="fas fa-microphone-alt"></i> Artist Control
+                </button>
+                <button class="security-tab" data-tab="system-monitor">
+                    <i class="fas fa-desktop"></i> System Monitor
+                </button>
+                <button class="security-tab" data-tab="quantum-settings">
+                    <i class="fas fa-atom"></i> Quantum Settings
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="security-content">
+                <!-- Admin Management Tab -->
+                <div class="security-tab-content active" id="admin-management">
+                    <div class="security-section">
+                        <h3><i class="fas fa-user-shield"></i> Admin Account Controls</h3>
+                        
+                        <div class="control-panel">
+                            <div class="control-group">
+                                <h4>Reset Admin Credentials</h4>
+                                <div class="control-inputs">
+                                    <select class="control-select" id="admin-select">
+                                        <option value="">Select Admin</option>
+                                    </select>
+                                    <button class="control-btn" onclick="resetAdminPassword()">
+                                        <i class="fas fa-key"></i> Reset Password
+                                    </button>
+                                    <button class="control-btn" onclick="resetAdminPasskey()">
+                                        <i class="fas fa-fingerprint"></i> Reset Passkey
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <h4>Admin Privileges</h4>
+                                <div class="privilege-grid">
+                                    <div class="privilege-item">
+                                        <label class="privilege-label">
+                                            <input type="checkbox" id="content-moderation">
+                                            Content Moderation
+                                        </label>
+                                    </div>
+                                    <div class="privilege-item">
+                                        <label class="privilege-label">
+                                            <input type="checkbox" id="user-management">
+                                            User Management
+                                        </label>
+                                    </div>
+                                    <div class="privilege-item">
+                                        <label class="privilege-label">
+                                            <input type="checkbox" id="system-settings">
+                                            System Settings
+                                        </label>
+                                    </div>
+                                    <div class="privilege-item">
+                                        <label class="privilege-label">
+                                            <input type="checkbox" id="security-access">
+                                            Security Access
+                                        </label>
+                                    </div>
+                                </div>
+                                <button class="control-btn btn-save" onclick="updateAdminPrivileges()">
+                                    <i class="fas fa-save"></i> Update Privileges
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist Control Tab -->
+                <div class="security-tab-content" id="artist-control">
+                    <div class="security-section">
+                        <h3><i class="fas fa-microphone-alt"></i> Artist Profile Management</h3>
+                        
+                        <div class="control-panel">
+                            <div class="control-group">
+                                <h4>Artist Account Controls</h4>
+                                <div class="control-inputs">
+                                    <select class="control-select" id="artist-select">
+                                        <option value="">Select Artist</option>
+                                    </select>
+                                    <button class="control-btn" onclick="resetArtistPassword()">
+                                        <i class="fas fa-key"></i> Reset Password
+                                    </button>
+                                    <button class="control-btn" onclick="renameArtist()">
+                                        <i class="fas fa-signature"></i> Rename Artist
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <h4>Profile Management</h4>
+                                <div class="profile-editor">
+                                    <div class="profile-preview">
+                                        <img id="artist-avatar" src="https://via.placeholder.com/100x100/3333ff/ffffff?text=A" alt="Artist Avatar">
+                                        <div class="profile-info">
+                                            <input type="text" class="profile-input" id="artist-name" placeholder="Artist Name">
+                                            <input type="text" class="profile-input" id="artist-stage-name" placeholder="Stage Name">
+                                        </div>
+                                    </div>
+                                    <div class="profile-actions">
+                                        <button class="control-btn" onclick="updateArtistProfile()">
+                                            <i class="fas fa-sync-alt"></i> Update Profile
+                                        </button>
+                                        <button class="control-btn btn-warning" onclick="resetArtistProfile()">
+                                            <i class="fas fa-undo"></i> Reset to Default
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Monitor Tab -->
+                <div class="security-tab-content" id="system-monitor">
+                    <div class="security-section">
+                        <h3><i class="fas fa-desktop"></i> Real-time System Monitoring</h3>
+                        
+                        <div class="monitor-grid">
+                            <div class="monitor-card">
+                                <h4>Platform Activity</h4>
+                                <div class="activity-feed" id="activity-feed">
+                                    <div class="activity-item">
+                                        <i class="fas fa-user-plus"></i>
+                                        <span>New admin registered</span>
+                                        <small>2 minutes ago</small>
+                                    </div>
+                                    <div class="activity-item">
+                                        <i class="fas fa-music"></i>
+                                        <span>Content uploaded</span>
+                                        <small>5 minutes ago</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="monitor-card">
+                                <h4>Security Events</h4>
+                                <div class="security-events" id="security-events">
+                                    <div class="event-item warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>Multiple login attempts</span>
+                                        <small>10 minutes ago</small>
+                                    </div>
+                                    <div class="event-item success">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>System backup completed</span>
+                                        <small>1 hour ago</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="monitor-card full-width">
+                                <h4>Performance Metrics</h4>
+                                <div class="metrics-grid">
+                                    <div class="metric">
+                                        <div class="metric-label">CPU Usage</div>
+                                        <div class="metric-value">24%</div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 24%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-label">Memory</div>
+                                        <div class="metric-value">62%</div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 62%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-label">Storage</div>
+                                        <div class="metric-value">45%</div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 45%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-label">Network</div>
+                                        <div class="metric-value">18%</div>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 18%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quantum Settings Tab -->
+                <div class="security-tab-content" id="quantum-settings">
+                    <div class="security-section">
+                        <h3><i class="fas fa-atom"></i> Quantum Security Settings</h3>
+                        
+                        <div class="quantum-controls">
+                            <div class="quantum-setting">
+                                <h4>Quantum Encryption Level</h4>
+                                <div class="quantum-slider">
+                                    <input type="range" min="1" max="10" value="8" class="encryption-slider" id="encryption-level">
+                                    <div class="slider-labels">
+                                        <span>Basic</span>
+                                        <span>Quantum</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quantum-setting">
+                                <h4>Neural Security Protocols</h4>
+                                <div class="protocol-grid">
+                                    <label class="protocol-item">
+                                        <input type="checkbox" checked> Behavioral Analysis
+                                    </label>
+                                    <label class="protocol-item">
+                                        <input type="checkbox" checked> Pattern Recognition
+                                    </label>
+                                    <label class="protocol-item">
+                                        <input type="checkbox"> Quantum Entanglement
+                                    </label>
+                                    <label class="protocol-item">
+                                        <input type="checkbox" checked> AI Monitoring
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="quantum-setting">
+                                <h4>System Hardening</h4>
+                                <div class="hardening-actions">
+                                    <button class="quantum-btn" onclick="enableQuantumShield()">
+                                        <i class="fas fa-shield-alt"></i> Enable Quantum Shield
+                                    </button>
+                                    <button class="quantum-btn" onclick="initiateSystemScan()">
+                                        <i class="fas fa-search"></i> Deep System Scan
+                                    </button>
+                                    <button class="quantum-btn btn-warning" onclick="purgeThreats()">
+                                        <i class="fas fa-skull-crossbones"></i> Purge Threats
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Notifications -->
+    <div class="security-notification" id="security-notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notification-message">Security system initialized</span>
+    </div>
+
+
+
+    <script>
+// ===== GLOBAL VARIABLES =====
+let currentAccessStep = 1;
+let neuralScanActive = false;
+let quantumSecurityLevel = 8;
+let systemMetrics = {
+    cpu: 24,
+    memory: 62,
+    storage: 45,
+    network: 18
+};
+
+// Predefined security credentials
+const securityCredentials = {
+    quantumSignature: "DFIX-QUANTUM-2024",
+    neuralPattern: "NEURAL-ACCESS-GRANTED",
+    sequencePattern: "ATGC-CGTA-ATCG",
+    crypticKey: "CRYPTIC-SECURE-KEY"
+};
+
+// ===== SECURITY ACCESS SYSTEM =====
+
+function showSecurityNotification(message, type = "info") {
+    const notification = document.getElementById('security-notification');
+    const messageElement = document.getElementById('notification-message');
+    
+    if (!notification || !messageElement) return;
+    
+    messageElement.textContent = message;
+    
+    // Set appropriate icon and color
+    const icon = notification.querySelector('i');
+    switch(type) {
+        case "error":
+            notification.style.background = "linear-gradient(135deg, var(--danger), #ff1a4d)";
+            icon.className = "fas fa-exclamation-circle";
+            break;
+        case "warning":
+            notification.style.background = "linear-gradient(135deg, var(--warning), #ffdb4d)";
+            icon.className = "fas fa-exclamation-triangle";
+            break;
+        case "success":
+            notification.style.background = "linear-gradient(135deg, var(--success), #00ff88)";
+            icon.className = "fas fa-check-circle";
+            break;
+        default:
+            notification.style.background = "linear-gradient(135deg, var(--quantum), var(--neural))";
+            icon.className = "fas fa-info-circle";
+    }
+    
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 4000);
+}
+
+function logSecurityEvent(event) {
+    console.log(`[SECURITY] ${new Date().toISOString()}: ${event}`);
+    // In a real system, this would send to a logging service
+}
+
+function nextAccessStep() {
+    if (currentAccessStep === 1) {
+        const quantumSig = document.getElementById('quantum-signature').value.trim();
+        
+        if (!quantumSig) {
+            showSecurityNotification("Quantum signature required", "warning");
+            return;
+        }
+        
+        if (quantumSig !== securityCredentials.quantumSignature) {
+            showSecurityNotification("Invalid quantum signature", "error");
+            return;
+        }
+        
+        if (!neuralScanActive) {
+            showSecurityNotification("Neural scan required", "warning");
+            return;
+        }
+        
+        currentAccessStep = 2;
+        document.getElementById('access-step1').classList.remove('active');
+        document.getElementById('access-step2').classList.add('active');
+        showSecurityNotification("Quantum verification initiated", "success");
+        
+    }
+}
+
+function prevAccessStep() {
+    if (currentAccessStep === 2) {
+        currentAccessStep = 1;
+        document.getElementById('access-step2').classList.remove('active');
+        document.getElementById('access-step1').classList.add('active');
+    }
+}
+
+function verifySecurityAccess() {
+    if (currentAccessStep === 2) {
+        const sequencePattern = document.getElementById('sequence-pattern').value.trim();
+        const crypticKey = document.getElementById('cryptic-key').value.trim();
+        
+        if (!sequencePattern || !crypticKey) {
+            showSecurityNotification("Both sequence pattern and cryptic key required", "warning");
+            return;
+        }
+        
+        if (sequencePattern !== securityCredentials.sequencePattern || 
+            crypticKey !== securityCredentials.crypticKey) {
+            showSecurityNotification("Bio-cryptic verification failed", "error");
+            return;
+        }
+        
+        // Success - access granted
+        document.getElementById('security-access-screen').style.display = 'none';
+        document.getElementById('security-command-center').style.display = 'block';
+        initializeCommandCenter();
+        showSecurityNotification("Security Command Center accessed successfully", "success");
+        
+        // Start system monitoring
+        startSystemMonitoring();
+    }
+}
+
+function cancelSecurityAccess() {
+    if (confirm("Abort security access procedure?")) {
+        window.location.href = 'index.html';
+    }
+}
+
+// ===== NEURAL SCAN FUNCTIONALITY =====
+function initiateNeuralScan() {
+    if (neuralScanActive) return;
+    
+    neuralScanActive = true;
+    const btn = document.getElementById('neural-scan-btn');
+    const originalText = btn.innerHTML;
+    
+    // Simulate neural scan process
+    btn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Scanning Neural Patterns...';
+    btn.disabled = true;
+    
+    // Animate neural waves
+    const waves = document.querySelectorAll('.neural-wave');
+    waves.forEach(wave => {
+        wave.style.animation = 'neuralPulse 0.5s ease-in-out infinite';
+    });
+    
+    setTimeout(() => {
+        waves.forEach(wave => {
+            wave.style.animation = 'neuralPulse 2s ease-in-out infinite';
+        });
+        
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Neural Scan Complete';
+        btn.style.background = 'linear-gradient(135deg, var(--success), var(--accent))';
+        
+        showSecurityNotification("Neural pattern verified successfully", "success");
+        
+        // Re-enable button after 2 seconds
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.style.background = '';
+        }, 2000);
+        
+    }, 3000);
+}
+
+// ===== COMMAND CENTER INITIALIZATION =====
+function initializeCommandCenter() {
+    updateSystemOverview();
+    loadAdminList();
+    loadArtistList();
+    initializeSecurityTabs();
+    initializeQuantumSettings();
+}
+
+function updateSystemOverview() {
+    const admins = JSON.parse(localStorage.getItem('dfixAdmins')) || [];
+    const artists = JSON.parse(localStorage.getItem('dfixArtists')) || [];
+    
+    document.getElementById('admin-count').textContent = admins.length;
+    document.getElementById('artist-count').textContent = artists.length;
+}
+
+function initializeSecurityTabs() {
+    document.querySelectorAll('.security-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.security-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.security-tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            this.classList.add('active');
+            const targetTab = this.dataset.tab;
+            document.getElementById(targetTab).classList.add('active');
+            
+            // Update content based on tab
+            switch(targetTab) {
+                case 'admin-management':
+                    loadAdminList();
+                    break;
+                case 'artist-control':
+                    loadArtistList();
+                    break;
+                case 'system-monitor':
+                    updateSystemMonitor();
+                    break;
+            }
+        });
+    });
+}
+
+// ===== ADMIN MANAGEMENT =====
+function loadAdminList() {
+    const admins = JSON.parse(localStorage.getItem('dfixAdmins')) || [];
+    const adminSelect = document.getElementById('admin-select');
+    
+    if (!adminSelect) return;
+    
+    // Clear existing options except the first one
+    adminSelect.innerHTML = '<option value="">Select Admin</option>';
+    
+    admins.forEach(admin => {
+        const option = document.createElement('option');
+        option.value = admin.id;
+        option.textContent = `${admin.fullName} (${admin.email})`;
+        adminSelect.appendChild(option);
+    });
+}
+
+function resetAdminPassword() {
+    const adminId = document.getElementById('admin-select').value;
+    
+    if (!adminId) {
+        showSecurityNotification("Please select an admin", "warning");
+        return;
+    }
+    
+    if (confirm("Reset this admin's password? This will generate a new secure password.")) {
+        const admins = JSON.parse(localStorage.getItem('dfixAdmins')) || [];
+        const adminIndex = admins.findIndex(a => a.id == adminId);
+        
+        if (adminIndex !== -1) {
+            // Generate new secure password
+            const newPassword = generateSecurePassword();
+            admins[adminIndex].password = newPassword;
+            
+            localStorage.setItem('dfixAdmins', JSON.stringify(admins));
+            
+            showSecurityNotification(`Password reset for ${admins[adminIndex].fullName}. New password: ${newPassword}`, "success");
+            logSecurityEvent(`Admin password reset: ${admins[adminIndex].fullName}`);
+        }
+    }
+}
+
+function resetAdminPasskey() {
+    const adminId = document.getElementById('admin-select').value;
+    
+    if (!adminId) {
+        showSecurityNotification("Please select an admin", "warning");
+        return;
+    }
+    
+    if (confirm("Reset this admin's passkey? This will generate a new quantum passkey.")) {
+        const admins = JSON.parse(localStorage.getItem('dfixAdmins')) || [];
+        const adminIndex = admins.findIndex(a => a.id == adminId);
+        
+        if (adminIndex !== -1) {
+            // Generate new quantum passkey
+            const newPasskey = generateQuantumPasskey();
+            admins[adminIndex].passkey = newPasskey;
+            
+            localStorage.setItem('dfixAdmins', JSON.stringify(admins));
+            
+            showSecurityNotification(`Passkey reset for ${admins[adminIndex].fullName}. New passkey: ${newPasskey}`, "success");
+            logSecurityEvent(`Admin passkey reset: ${admins[adminIndex].fullName}`);
+        }
+    }
+}
+
+function updateAdminPrivileges() {
+    const privileges = {
+        contentModeration: document.getElementById('content-moderation').checked,
+        userManagement: document.getElementById('user-management').checked,
+        systemSettings: document.getElementById('system-settings').checked,
+        securityAccess: document.getElementById('security-access').checked
+    };
+    
+    showSecurityNotification("Admin privileges updated successfully", "success");
+    logSecurityEvent("Admin privileges modified");
+}
+
+// ===== ARTIST CONTROL =====
+function loadArtistList() {
+    // Sample artist data - in real implementation, this would come from your database
+    const artists = JSON.parse(localStorage.getItem('dfixArtists')) || [
+        { id: 1, name: "DFIX DGXcore", stageName: "DGXcore", avatar: "https://via.placeholder.com/100x100/ff00cc/ffffff?text=DG" },
+        { id: 2, name: "Binash", stageName: "Binash", avatar: "https://via.placeholder.com/100x100/3333ff/ffffff?text=B" },
+        { id: 3, name: "Diodeo", stageName: "Diodeo", avatar: "https://via.placeholder.com/100x100/00ffcc/ffffff?text=D" }
+    ];
+    
+    localStorage.setItem('dfixArtists', JSON.stringify(artists));
+    
+    const artistSelect = document.getElementById('artist-select');
+    if (!artistSelect) return;
+    
+    artistSelect.innerHTML = '<option value="">Select Artist</option>';
+    
+    artists.forEach(artist => {
+        const option = document.createElement('option');
+        option.value = artist.id;
+        option.textContent = `${artist.name} (${artist.stageName})`;
+        artistSelect.appendChild(option);
+    });
+}
+
+function resetArtistPassword() {
+    const artistId = document.getElementById('artist-select').value;
+    
+    if (!artistId) {
+        showSecurityNotification("Please select an artist", "warning");
+        return;
+    }
+    
+    if (confirm("Reset this artist's password? They will need to set a new password on next login.")) {
+        showSecurityNotification("Artist password reset initiated", "success");
+        logSecurityEvent(`Artist password reset: ID ${artistId}`);
+        
+        // In a real system, you would trigger a password reset email or notification
+    }
+}
+
+function renameArtist() {
+    const artistId = document.getElementById('artist-select').value;
+    const newName = prompt("Enter new artist name:");
+    
+    if (!artistId || !newName) {
+        showSecurityNotification("Artist selection and new name required", "warning");
+        return;
+    }
+    
+    if (confirm(`Change artist name to "${newName}"?`)) {
+        const artists = JSON.parse(localStorage.getItem('dfixArtists')) || [];
+        const artistIndex = artists.findIndex(a => a.id == artistId);
+        
+        if (artistIndex !== -1) {
+            const oldName = artists[artistIndex].name;
+            artists[artistIndex].name = newName;
+            
+            localStorage.setItem('dfixArtists', JSON.stringify(artists));
+            
+            showSecurityNotification(`Artist renamed from "${oldName}" to "${newName}"`, "success");
+            logSecurityEvent(`Artist renamed: ${oldName} → ${newName}`);
+            
+            loadArtistList(); // Refresh the list
+        }
+    }
+}
+
+function updateArtistProfile() {
+    const artistId = document.getElementById('artist-select').value;
+    const artistName = document.getElementById('artist-name').value;
+    const stageName = document.getElementById('artist-stage-name').value;
+    
+    if (!artistId) {
+        showSecurityNotification("Please select an artist", "warning");
+        return;
+    }
+    
+    if (confirm("Update artist profile with new information?")) {
+        showSecurityNotification("Artist profile updated successfully", "success");
+        logSecurityEvent(`Artist profile updated: ID ${artistId}`);
+    }
+}
+
+function resetArtistProfile() {
+    if (confirm("Reset artist profile to default settings?")) {
+        showSecurityNotification("Artist profile reset to default", "success");
+        logSecurityEvent("Artist profile reset");
+    }
+}
+
+// ===== SYSTEM MONITORING =====
+function updateSystemMonitor() {
+    updateActivityFeed();
+    updateSecurityEvents();
+    updatePerformanceMetrics();
+}
+
+function updateActivityFeed() {
+    const activityFeed = document.getElementById('activity-feed');
+    if (!activityFeed) return;
+    
+    const activities = [
+        { icon: 'fa-user-plus', text: 'New admin registered', time: '2 minutes ago' },
+        { icon: 'fa-music', text: 'Content uploaded by DFIX DGXcore', time: '5 minutes ago' },
+        { icon: 'fa-user-edit', text: 'Artist profile updated', time: '15 minutes ago' },
+        { icon: 'fa-shield-alt', text: 'Security scan completed', time: '30 minutes ago' }
+    ];
+    
+    activityFeed.innerHTML = activities.map(activity => `
+        <div class="activity-item">
+            <i class="fas ${activity.icon}"></i>
+            <span>${activity.text}</span>
+            <small>${activity.time}</small>
+        </div>
+    `).join('');
+}
+
+function updateSecurityEvents() {
+    const securityEvents = document.getElementById('security-events');
+    if (!securityEvents) return;
+    
+    const events = [
+        { type: 'warning', icon: 'fa-exclamation-triangle', text: 'Multiple login attempts detected', time: '10 minutes ago' },
+        { type: 'success', icon: 'fa-check-circle', text: 'System backup completed successfully', time: '1 hour ago' },
+        { type: 'success', icon: 'fa-shield-alt', text: 'Quantum encryption enabled', time: '2 hours ago' },
+        { type: 'warning', icon: 'fa-clock', text: 'Scheduled maintenance in 30 minutes', time: '3 hours ago' }
+    ];
+    
+    securityEvents.innerHTML = events.map(event => `
+        <div class="event-item ${event.type}">
+            <i class="fas ${event.icon}"></i>
+            <span>${event.text}</span>
+            <small>${event.time}</small>
+        </div>
+    `).join('');
+}
+
+function updatePerformanceMetrics() {
+    // Simulate real-time metric updates
+    setInterval(() => {
+        systemMetrics.cpu = Math.max(5, Math.min(95, systemMetrics.cpu + (Math.random() * 4 - 2)));
+        systemMetrics.memory = Math.max(10, Math.min(90, systemMetrics.memory + (Math.random() * 3 - 1.5)));
+        systemMetrics.storage = Math.max(40, Math.min(80, systemMetrics.storage + (Math.random() * 2 - 1)));
+        systemMetrics.network = Math.max(5, Math.min(50, systemMetrics.network + (Math.random() * 5 - 2.5)));
+        
+        document.querySelectorAll('.metric-fill')[0].style.width = systemMetrics.cpu + '%';
+        document.querySelectorAll('.metric-value')[0].textContent = systemMetrics.cpu + '%';
+        
+        document.querySelectorAll('.metric-fill')[1].style.width = systemMetrics.memory + '%';
+        document.querySelectorAll('.metric-value')[1].textContent = systemMetrics.memory + '%';
+        
+        document.querySelectorAll('.metric-fill')[2].style.width = systemMetrics.storage + '%';
+        document.querySelectorAll('.metric-value')[2].textContent = systemMetrics.storage + '%';
+        
+        document.querySelectorAll('.metric-fill')[3].style.width = systemMetrics.network + '%';
+        document.querySelectorAll('.metric-value')[3].textContent = systemMetrics.network + '%';
+        
+    }, 3000);
+}
+
+function startSystemMonitoring() {
+    updateSystemMonitor();
+    
+    // Add random security events periodically
+    setInterval(() => {
+        const events = [
+            "System integrity check passed",
+            "Network traffic analysis completed",
+            "User activity monitoring active",
+            "Threat detection system operational"
+        ];
+        
+        const randomEvent = events[Math.floor(Math.random() * events.length)];
+        logSecurityEvent(randomEvent);
+        
+    }, 15000);
+}
+
+// ===== QUANTUM SETTINGS =====
+function initializeQuantumSettings() {
+    const encryptionSlider = document.getElementById('encryption-level');
+    if (encryptionSlider) {
+        encryptionSlider.addEventListener('input', function() {
+            quantumSecurityLevel = this.value;
+            updateQuantumSecurity();
+        });
+    }
+}
+
+function updateQuantumSecurity() {
+    const levels = {
+        1: "Basic Encryption",
+        2: "Standard Security",
+        3: "Enhanced Protection",
+        4: "Advanced Encryption",
+        5: "High Security",
+        6: "Maximum Protection",
+        7: "Quantum Level 1",
+        8: "Quantum Level 2",
+        9: "Quantum Level 3",
+        10: "Ultimate Quantum"
+    };
+    
+    showSecurityNotification(`Security level updated to: ${levels[quantumSecurityLevel]}`, "success");
+    logSecurityEvent(`Quantum security level changed to ${levels[quantumSecurityLevel]}`);
+}
+
+function enableQuantumShield() {
+    showSecurityNotification("Quantum Shield activated - Maximum security enabled", "success");
+    logSecurityEvent("Quantum Shield activated");
+    
+    // Visual feedback
+    document.body.style.animation = 'quantumPulse 2s ease-in-out';
+    setTimeout(() => {
+        document.body.style.animation = '';
+    }, 2000);
+}
+
+function initiateSystemScan() {
+    showSecurityNotification("Initiating deep system scan...", "info");
+    
+    // Simulate scanning process
+    setTimeout(() => {
+        const threats = Math.random() > 0.7 ? Math.floor(Math.random() * 3) : 0;
+        
+        if (threats > 0) {
+            showSecurityNotification(`Scan complete: ${threats} potential threat(s) detected`, "warning");
+        } else {
+            showSecurityNotification("Scan complete: System clean - no threats detected", "success");
+        }
+        
+        logSecurityEvent(`System scan completed - ${threats} threats found`);
+        
+    }, 3000);
+}
+
+function purgeThreats() {
+    if (confirm("Initiate threat purge procedure? This will quarantine and remove all detected threats.")) {
+        showSecurityNotification("Threat purge initiated...", "warning");
+        
+        setTimeout(() => {
+            showSecurityNotification("Threat purge completed - system secured", "success");
+            logSecurityEvent("Threat purge procedure executed");
+        }, 2000);
+    }
+}
+
+// ===== UTILITY FUNCTIONS =====
+function generateSecurePassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+}
+
+function generateQuantumPasskey() {
+    const segments = [
+        Math.random().toString(36).substring(2, 6).toUpperCase(),
+        Math.random().toString(36).substring(2, 6).toUpperCase(),
+        Math.random().toString(36).substring(2, 6).toUpperCase()
+    ];
+    return `QPK-${segments.join('-')}`;
+}
+
+function exitCommandCenter() {
+    if (confirm("Lock Security Command Center? You will need to re-authenticate to access it again.")) {
+        document.getElementById('security-command-center').style.display = 'none';
+        document.getElementById('security-access-screen').style.display = 'flex';
+        
+        // Reset access state
+        currentAccessStep = 1;
+        neuralScanActive = false;
+        document.getElementById('access-step1').classList.add('active');
+        document.getElementById('access-step2').classList.remove('active');
+        
+        // Clear inputs
+        document.getElementById('quantum-signature').value = '';
+        document.getElementById('sequence-pattern').value = '';
+        document.getElementById('cryptic-key').value = '';
+        
+        showSecurityNotification("Security Command Center locked", "info");
+    }
+}
+
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DFIX Security System Initialized");
+    
+    // Add quantum pulse animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes quantumPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(0, 255, 255, 0); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize security tabs
+    initializeSecurityTabs();
+    
+    // Load initial data
+    loadAdminList();
+    loadArtistList();
+    
+    // Show security screen by default
+    document.getElementById('security-access-screen').style.display = 'flex';
+    document.getElementById('security-command-center').style.display = 'none';
+    
+    showSecurityNotification("Security system initialized. Quantum authentication required.", "info");
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFIX DGXcore - Fan Engagement</title>
+    <style>
+        /* ===== Global Styles ===== */
+        :root {
+            --primary: #ff00cc;
+            --secondary: #3333ff;
+            --accent: #00ffcc;
+            --dark: #121212;
+            --light: #f8f8f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        /* ===== Gradient Text ===== */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        /* ===== Header/Navigation ===== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .back-btn {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: white;
+            color: var(--dark);
+        }
+        
+        /* ===== Dashboard Styles ===== */
+        .dashboard-container {
+            padding: 120px 5% 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-subtitle {
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+        
+        /* ===== Engagement System ===== */
+        .engagement-system {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .engagement-system {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Comments Section */
+        .comments-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .comments-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .comments-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .comment-item {
+            display: flex;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .comment-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+        }
+        
+        .comment-item.selected {
+            border: 2px solid var(--primary);
+            background: rgba(255, 0, 204, 0.05);
+        }
+        
+        .comment-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid var(--primary);
+        }
+        
+        .comment-content {
+            flex-grow: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .comment-user {
+            font-weight: 600;
+        }
+        
+        .comment-time {
+            font-size: 6px;
+            opacity: 0.7;
+        }
+        
+        .comment-text {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .comment-action {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .comment-action:hover {
+            color: var(--accent);
+        }
+        
+        .muted-user {
+            opacity: 0.6;
+            background: rgba(255, 0, 0, 0.05);
+        }
+        
+        /* Emoji Gift Panel */
+        .emoji-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .emoji-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .emoji-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .selected-gift {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+        }
+        
+        .selected-gift-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .emoji-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        
+        .emoji-item:hover:not(.out-of-stock) {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .emoji-item.selected:not(.out-of-stock) {
+            border-color: var(--primary);
+            background: rgba(255, 0, 204, 0.1);
+        }
+        
+        .emoji-item.out-of-stock {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .emoji-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .emoji-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .emoji-value {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .emoji-count {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .out-of-stock-label {
+            font-size: 10px;
+            color: #ff3366;
+            margin-top: 5px;
+        }
+        
+        .send-emoji-btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: block;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .send-emoji-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 0, 204, 0.3);
+        }
+        
+        .send-emoji-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .view-sent-gifts-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .view-sent-gifts-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Sent Gifts Section */
+        .sent-gifts-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .sent-gifts-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .sent-gift-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .sent-gift-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .sent-gift-details {
+            flex-grow: 1;
+        }
+        
+        .sent-gift-recipient {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .sent-gift-info {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .sent-gift-time {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+        
+        .back-to-gifts-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-to-gifts-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* WhatsApp Contact Button */
+        .whatsapp-contact {
+            background: rgba(37, 211, 102, 0.15);
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            color: #25D366;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .whatsapp-contact a {
+            color: #25D366;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .whatsapp-contact a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Confirmation Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .confirmation-modal {
+            background: #1E1E1E;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+        
+        .modal-overlay.active .confirmation-modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .modal-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .gift-summary {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .summary-gift-icon {
+            font-size: 36px;
+            margin-right: 15px;
+        }
+        
+        .summary-details {
+            flex-grow: 1;
+        }
+        
+        .summary-value {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .selected-recipients {
+            margin-bottom: 20px;
+        }
+        
+        .recipients-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .recipients-title i {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+        
+        .recipients-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .recipient-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .recipient-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .recipient-name {
+            flex-grow: 1;
+            font-size: 14px;
+        }
+        
+        .remove-recipient {
+            background: none;
+            border: none;
+            color: #ff3366;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+        
+        .add-recipient-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .add-recipient-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .cancel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+        }
+        
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 0, 204, 0.3);
+        }
+        
+        /* Muted Fans Section */
+        .muted-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .muted-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .muted-title {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .muted-title i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .muted-count {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff3366;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .muted-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .muted-user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .muted-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .muted-details {
+            flex-grow: 1;
+        }
+        
+        .muted-username {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .muted-reason {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .unmute-btn {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .unmute-btn:hover {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: var(--accent);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .emoji-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .comment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .comment-time {
+                align-self: flex-end;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo gradient-text">DFIX DGXcore</div>
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+    </header>
+    
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title gradient-text">Fan Engagement</h1>
+            <p class="dashboard-subtitle">Connect with your fans and build your community</p>
+        </div>
+        
+        <div class="engagement-system">
+            <!-- Main Content -->
+            <div>
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h2 class="section-title"><i class="fas fa-comments"></i> Fan Comments</h2>
+                    
+                    <div class="comments-filter">
+                        <button class="filter-btn active" data-filter="all">All Comments</button>
+                        <button class="filter-btn" data-filter="top">Top Fans</button>
+                        <button class="filter-btn" data-filter="recent">Recent</button>
+                        <button class="filter-btn" data-filter="gifts">With Gifts</button>
+                    </div>
+                    
+                    <div class="comments-list" id="comments-list">
+                        <!-- Comment items will be dynamically inserted -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div>
+                <!-- Emoji Gift Panel -->
+                <div class="emoji-panel" id="emoji-panel">
+                    <h2 class="emoji-title"><i class="fas fa-gift"></i> Send Gift</h2>
+                    
+                    <div class="selected-gift" id="selected-gift">
+                        <div class="selected-gift-icon" id="selected-gift-icon"></div>
+                        <div class="selected-gift-details">
+                            <div class="selected-gift-name" id="selected-gift-name"></div>
+                            <div class="selected-gift-value" id="selected-gift-value"></div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;" id="gift-instruction">First select a gift to send</p>
+                    
+                    <div class="emoji-grid" id="emoji-grid">
+                        <!-- Emoji items will be dynamically inserted -->
+                    </div>
+                    
+                    <button class="send-emoji-btn" id="send-emoji-btn" disabled>
+                        <i class="fas fa-paper-plane"></i> Send Gift to Selected Fans
+                    </button>
+                    
+                    <button class="view-sent-gifts-btn" id="view-sent-gifts-btn">
+                        <i class="fas fa-history"></i> View Sent Gifts
+                    </button>
+                    
+                    <div class="whatsapp-contact" id="whatsapp-contact">
+                        <a href="https://wa.me/1234567890?text=Hi%20DFIX%20DGXcore%20team,%20I%20want%20to%20purchase%20more%20gift%20emojis" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Contact us to buy more emojis
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Sent Gifts Section -->
+                <div class="sent-gifts-section" id="sent-gifts-section">
+                    <div class="modal-header">
+                        <h2 class="modal-title"><i class="fas fa-history"></i> Sent Gifts</h2>
+                        <button class="back-to-gifts-btn" onclick="showGiftPanel()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                    </div>
+                    
+                    <div class="sent-gifts-list" id="sent-gifts-list">
+                        <!-- Sent gift items will be dynamically inserted -->
+                    </div>
+                </div>
+                
+                <!-- Muted Fans Section -->
+                <div class="muted-section">
+                    <div class="muted-header">
+                        <h2 class="muted-title"><i class="fas fa-volume-mute"></i> Muted Fans</h2>
+                        <div class="muted-count" id="muted-count">3</div>
+                    </div>
+                    
+                    <div class="muted-list" id="muted-list">
+                        <!-- Muted users will be dynamically inserted -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmation-modal">
+        <div class="confirmation-modal">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-gift"></i> Confirm Gift Sending</h2>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="gift-summary">
+                <div class="summary-gift-icon" id="modal-gift-icon"></div>
+                <div class="summary-details">
+                    <div class="summary-value" id="modal-gift-value"></div>
+                    <div id="modal-gift-name"></div>
+                </div>
+            </div>
+            
+            <div class="selected-recipients">
+                <div class="recipients-title">
+                    <i class="fas fa-users"></i> Recipients (<span id="recipients-count">0</span>)
+                </div>
+                
+                <div class="recipients-list" id="recipients-list">
+                    <!-- Recipients will be added here -->
+                </div>
+                
+                <button class="add-recipient-btn" onclick="addMoreRecipients()">
+                    <i class="fas fa-plus"></i> Add More Recipients
+                </button>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn confirm-btn" onclick="confirmSending()">Confirm & Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Gift sent successfully!</span>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Sample comments data
+        const comments = [
+            {
+                id: 1,
+                user: "MusicLover42",
+                avatar: "https://via.placeholder.com/45x45/3333ff/ffffff?text=ML",
+                text: "Your new song is absolutely fire! I've been playing it on repeat all day 🔥",
+                time: "2 hours ago",
+                isTopFan: true,
+                gifts: ["🔥", "⭐"],
+                timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
+            },
+            {
+                id: 2,
+                user: "BeatMaker99",
+                avatar: "https://via.placeholder.com/45x45/ff00cc/ffffff?text=BM",
+                text: "When is the album dropping? I need more of your music in my life!",
+                time: "5 hours ago",
+                isTopFan: true,
+                gifts: ["💎"],
+                timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000) // 5 hours ago
+            },
+            {
+                id: 3,
+                user: "DanceFloorQueen",
+                avatar: "https://via.placeholder.com/45x45/00ffcc/ffffff?text=DF",
+                text: "The beat in your latest track is insane! Perfect for dancing 💃",
+                time: "1 day ago",
+                isTopFan: false,
+                gifts: [],
+                timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000) // 1 day ago
+            },
+            {
+                id: 4,
+                user: "Hater123",
+                avatar: "https://via.placeholder.com/45x45/ff3366/ffffff?text=H",
+                text: "Your music is trash, give up already",
+                time: "1 day ago",
+                isTopFan: false,
+                gifts: [],
+                muted: true,
+                timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000) // 1 day ago
+            },
+            {
+                id: 5,
+                user: "SynthMaster",
+                avatar: "https://via.placeholder.com/45x45/3333ff/ffffff?text=SM",
+                text: "The production quality on your tracks is always top-notch. What DAW do you use?",
+                time: "2 days ago",
+                isTopFan: true,
+                gifts: ["🎵", "🎤"],
+                timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
+            },
+            {
+                id: 6,
+                user: "TrollAccount",
+                avatar: "https://via.placeholder.com/45x45/ff3366/ffffff?text=T",
+                text: "Nobody listens to your garbage music",
+                time: "3 days ago",
+                isTopFan: false,
+                gifts: [],
+                muted: true,
+                timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) // 3 days ago
+            },
+            {
+                id: 7,
+                user: "SuperFan2023",
+                avatar: "https://via.placeholder.com/45x45/ff00cc/ffffff?text=SF",
+                text: "I've been to all your concerts this year! You're amazing live!",
+                time: "Just now",
+                isTopFan: true,
+                gifts: ["👑", "💎", "🔥"],
+                timestamp: new Date() // Just now
+            }
+        ];
+        
+        // Muted fans data
+        const mutedFans = [
+            {
+                id: 4,
+                user: "Hater123",
+                avatar: "https://via.placeholder.com/40x40/ff3366/ffffff?text=H",
+                reason: "Inappropriate comments"
+            },
+            {
+                id: 6,
+                user: "TrollAccount",
+                avatar: "https://via.placeholder.com/40x40/ff3366/ffffff?text=T",
+                reason: "Spam and harassment"
+            },
+            {
+                id: 8,
+                user: "NegativeNancy",
+                avatar: "https://via.placeholder.com/40x40/ff3366/ffffff?text=NN",
+                reason: "Repeated negative comments"
+            }
+        ];
+        
+        // Emoji inventory with initial counts
+        let emojiInventory = [
+            { icon: "🎵", name: "Music Note", value: "5", count: 2 },
+            { icon: "🔥", name: "Fire", value: "10", count: 6 },
+            { icon: "⭐", name: "Star", value: "20", count: 7 },
+            { icon: "🎤", name: "Microphone", value: "50", count: 4 },
+            { icon: "💎", name: "Diamond", value: "100", count: 10 },
+            { icon: "👑", name: "Crown", value: "200", count: 5 }
+        ];
+        
+        // Sent gifts history
+        let sentGifts = [
+            {
+                icon: "🎵",
+                name: "Music Note",
+                value: "5",
+                recipient: "MusicLover42",
+                time: "2 hours ago",
+                timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000)
+            },
+            {
+                icon: "🔥",
+                name: "Fire",
+                value: "10",
+                recipient: "BeatMaker99",
+                time: "5 hours ago",
+                timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000)
+            },
+            {
+                icon: "💎",
+                name: "Diamond",
+                value: "100",
+                recipient: "SuperFan2023",
+                time: "Just now",
+                timestamp: new Date()
+            }
+        ];
+        
+        let currentFilter = 'all';
+        let selectedGift = null;
+        let selectedUsers = [];
+        
+        // Render emoji grid with inventory counts
+        function renderEmojiGrid() {
+            const emojiGrid = document.getElementById('emoji-grid');
+            emojiGrid.innerHTML = '';
+            
+            emojiInventory.forEach(emoji => {
+                const emojiItem = document.createElement('div');
+                emojiItem.className = `emoji-item ${emoji.count === 0 ? 'out-of-stock' : ''}`;
+                emojiItem.dataset.value = emoji.value;
+                emojiItem.dataset.icon = emoji.icon;
+                emojiItem.dataset.name = emoji.name;
+                
+                emojiItem.innerHTML = `
+                    <div class="emoji-icon">${emoji.icon}</div>
+                    <div class="emoji-name">${emoji.name}</div>
+                    <div class="emoji-value">$${emoji.value}.00</div>
+                    ${emoji.count > 0 ? `
+                        <div class="emoji-count">${emoji.count}</div>
+                    ` : `
+                        <div class="out-of-stock-label">Out of stock</div>
+                    `}
+                `;
+                
+                if (emoji.count > 0) {
+                    emojiItem.addEventListener('click', function() {
+                        selectGift(emoji);
+                    });
+                }
+                
+                emojiGrid.appendChild(emojiItem);
+            });
+        }
+        
+        // Select gift function
+        function selectGift(emoji) {
+            // Remove selection from other gifts
+            document.querySelectorAll('.emoji-item').forEach(gift => {
+                gift.classList.remove('selected');
+            });
+            
+            // Select this gift
+            const giftElement = document.querySelector(`.emoji-item[data-value="${emoji.value}"]`);
+            giftElement.classList.add('selected');
+            
+            selectedGift = {
+                value: emoji.value,
+                icon: emoji.icon,
+                name: emoji.name
+            };
+            
+            // Update selected gift display
+            const selectedGiftDiv = document.getElementById('selected-gift');
+            const selectedGiftIcon = document.getElementById('selected-gift-icon');
+            const selectedGiftName = document.getElementById('selected-gift-name');
+            const selectedGiftValue = document.getElementById('selected-gift-value');
+            const giftInstruction = document.getElementById('gift-instruction');
+            
+            selectedGiftIcon.textContent = selectedGift.icon;
+            selectedGiftName.textContent = selectedGift.name;
+            selectedGiftValue.textContent = `$${selectedGift.value}.00 (${getEmojiCount(selectedGift.icon)} left)`;
+            selectedGiftDiv.style.display = 'flex';
+            giftInstruction.textContent = 'Now click on fans to select them';
+            
+            // Enable send button if both gift and users are selected
+            updateSendButtonState();
+            
+            showToast(`Selected ${selectedGift.name} gift ($${selectedGift.value}.00)`);
+        }
+        
+        // Get count for a specific emoji
+        function getEmojiCount(icon) {
+            const emoji = emojiInventory.find(e => e.icon === icon);
+            return emoji ? emoji.count : 0;
+        }
+        
+        // Update emoji count after sending
+        function updateEmojiCount(icon, amount) {
+            const emoji = emojiInventory.find(e => e.icon === icon);
+            if (emoji) {
+                emoji.count -= amount;
+                if (emoji.count < 0) emoji.count = 0;
+                
+                // Show WhatsApp contact if emoji is out of stock
+                const whatsappContact = document.getElementById('whatsapp-contact');
+                if (emoji.count === 0) {
+                    whatsappContact.style.display = 'block';
+                }
+            }
+        }
+        
+        // Render comments based on current filter
+        function renderComments() {
+            const commentsList = document.getElementById('comments-list');
+            commentsList.innerHTML = '';
+            
+            let filteredComments = [...comments];
+            
+            // Apply filters
+            switch(currentFilter) {
+                case 'top':
+                    filteredComments = filteredComments.filter(comment => comment.isTopFan);
+                    break;
+                case 'recent':
+                    // Show comments from last 24 hours
+                    filteredComments = filteredComments.filter(comment => {
+                        return (Date.now() - comment.timestamp) < (24 * 60 * 60 * 1000);
+                    });
+                    // Sort by most recent first
+                    filteredComments.sort((a, b) => b.timestamp - a.timestamp);
+                    break;
+                case 'gifts':
+                    filteredComments = filteredComments.filter(comment => 
+                        comment.gifts && comment.gifts.length > 0
+                    );
+                    break;
+                case 'all':
+                default:
+                    // For all comments, sort by most recent first
+                    filteredComments.sort((a, b) => b.timestamp - a.timestamp);
+                    break;
+            }
+            
+            filteredComments.forEach(comment => {
+                const commentItem = document.createElement('div');
+                commentItem.className = `comment-item ${comment.muted ? 'muted-user' : ''} ${selectedUsers.includes(comment.id) ? 'selected' : ''}`;
+                commentItem.dataset.userId = comment.id;
+                
+                let giftsHTML = '';
+                if (comment.gifts && comment.gifts.length > 0) {
+                    giftsHTML = `<div style="margin-top: 8px;">
+                        <span style="font-size: 12px; opacity: 0.7;">Gifts received: </span>
+                        ${comment.gifts.map(gift => `<span style="font-size: 16px;">${gift}</span>`).join(' ')}
+                    </div>`;
+                }
+                
+                commentItem.innerHTML = `
+                    <img src="${comment.avatar}" alt="${comment.user}" class="comment-avatar">
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <div class="comment-user">${comment.user} ${comment.isTopFan ? '<span style="color: var(--accent); font-size: 12px;">★ Top Fan</span>' : ''}</div>
+                            <div class="comment-time">${comment.time}</div>
+                        </div>
+                        <div class="comment-text">${comment.text}</div>
+                        ${giftsHTML}
+                        <div class="comment-actions">
+                            <button class="comment-action" onclick="replyToComment(${comment.id})">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                            ${!comment.muted ? `
+                            <button class="comment-action" onclick="muteUser(${comment.id})" style="color: #ff3366;">
+                                <i class="fas fa-volume-mute"></i> Mute
+                            </button>
+                            ` : `
+                            <button class="comment-action" onclick="unmuteUser(${comment.id})" style="color: var(--accent);">
+                                <i class="fas fa-volume-up"></i> Unmute
+                            </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+                
+                // Add click event to select user for gifting
+                commentItem.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on action buttons
+                    if (!e.target.closest('.comment-actions')) {
+                        toggleUserSelection(comment.id);
+                    }
+                });
+                
+                commentsList.appendChild(commentItem);
+            });
+        }
+        
+        // Toggle user selection
+        function toggleUserSelection(userId) {
+            if (!selectedGift) {
+                showToast("Please select a gift first");
+                return;
+            }
+            
+            // Check if we have enough emojis
+            if (getEmojiCount(selectedGift.icon) <= 0) {
+                showToast(`You don't have any ${selectedGift.name} emojis left!`);
+                return;
+            }
+            
+            const index = selectedUsers.indexOf(userId);
+            
+            if (index === -1) {
+                // Check if we have enough emojis for another recipient
+                if (selectedUsers.length >= getEmojiCount(selectedGift.icon)) {
+                    showToast(`You only have ${getEmojiCount(selectedGift.icon)} ${selectedGift.name} emojis left!`);
+                    return;
+                }
+                
+                // Add to selection
+                selectedUsers.push(userId);
+            } else {
+                // Remove from selection
+                selectedUsers.splice(index, 1);
+            }
+            
+            // Update UI
+            renderComments();
+            updateSendButtonState();
+            
+            if (selectedUsers.length > 0) {
+                showToast(`Selected ${selectedUsers.length} fan(s) for gifting`);
+            }
+        }
+        
+        // Render muted fans
+        function renderMutedFans() {
+            const mutedList = document.getElementById('muted-list');
+            const mutedCount = document.getElementById('muted-count');
+            
+            mutedList.innerHTML = '';
+            mutedCount.textContent = mutedFans.length;
+            
+            mutedFans.forEach(fan => {
+                const mutedItem = document.createElement('div');
+                mutedItem.className = 'muted-user-item';
+                
+                mutedItem.innerHTML = `
+                    <img src="${fan.avatar}" alt="${fan.user}" class="muted-avatar">
+                    <div class="muted-details">
+                        <div class="muted-username">${fan.user}</div>
+                        <div class="muted-reason">${fan.reason}</div>
+                    </div>
+                    <button class="unmute-btn" onclick="unmuteUser(${fan.id})">
+                        <i class="fas fa-volume-up"></i> Unmute
+                    </button>
+                `;
+                
+                mutedList.appendChild(mutedItem);
+            });
+        }
+        
+        // Update send button state based on selection
+        function updateSendButtonState() {
+            const sendButton = document.getElementById('send-emoji-btn');
+            sendButton.disabled = !(selectedGift && selectedUsers.length > 0);
+        }
+        
+        // Send gift function
+        function setupSendGift() {
+            document.getElementById('send-emoji-btn').addEventListener('click', function() {
+                if (!selectedGift || selectedUsers.length === 0) return;
+                
+                // Check if we have enough emojis
+                if (getEmojiCount(selectedGift.icon) < selectedUsers.length) {
+                    showToast(`You only have ${getEmojiCount(selectedGift.icon)} ${selectedGift.name} emojis left!`);
+                    return;
+                }
+                
+                // Show confirmation modal
+                showConfirmationModal();
+            });
+        }
+        
+        // Show confirmation modal
+        function showConfirmationModal() {
+            const modal = document.getElementById('confirmation-modal');
+            const modalGiftIcon = document.getElementById('modal-gift-icon');
+            const modalGiftValue = document.getElementById('modal-gift-value');
+            const modalGiftName = document.getElementById('modal-gift-name');
+            const recipientsCount = document.getElementById('recipients-count');
+            const recipientsList = document.getElementById('recipients-list');
+            
+            // Update gift info in modal
+            modalGiftIcon.textContent = selectedGift.icon;
+            modalGiftValue.textContent = `$${selectedGift.value}.00 x ${selectedUsers.length} fans = $${selectedGift.value * selectedUsers.length}.00`;
+            modalGiftName.textContent = `${selectedGift.name} (${getEmojiCount(selectedGift.icon)} left)`;
+            
+            // Update recipients count
+            recipientsCount.textContent = selectedUsers.length;
+            
+            // Populate recipients list
+            recipientsList.innerHTML = '';
+            selectedUsers.forEach(userId => {
+                const user = comments.find(c => c.id === userId);
+                if (user) {
+                    const recipientItem = document.createElement('div');
+                    recipientItem.className = 'recipient-item';
+                    recipientItem.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.user}" class="recipient-avatar">
+                        <div class="recipient-name">${user.user}</div>
+                        <button class="remove-recipient" onclick="removeRecipient(${userId})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    recipientsList.appendChild(recipientItem);
+                }
+            });
+            
+            // Show modal
+            modal.classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('confirmation-modal');
+            modal.classList.remove('active');
+        }
+        
+        // Remove recipient from selection
+        function removeRecipient(userId) {
+            const index = selectedUsers.indexOf(userId);
+            if (index !== -1) {
+                selectedUsers.splice(index, 1);
+                
+                // Update UI
+                renderComments();
+                updateSendButtonState();
+                
+                // Refresh modal
+                if (selectedUsers.length > 0) {
+                    showConfirmationModal();
+                } else {
+                    closeModal();
+                    showToast("No recipients selected");
+                }
+            }
+        }
+        
+        // Add more recipients
+        function addMoreRecipients() {
+            closeModal();
+            showToast("Select more fans to receive the gift");
+        }
+        
+        // Confirm and send gifts
+        function confirmSending() {
+            // Update emoji inventory
+            updateEmojiCount(selectedGift.icon, selectedUsers.length);
+            
+            // Add to sent gifts history
+            selectedUsers.forEach(userId => {
+                const user = comments.find(c => c.id === userId);
+                if (user) {
+                    // Add gift to user
+                    if (!user.gifts) user.gifts = [];
+                    user.gifts.push(selectedGift.icon);
+                    
+                    // Add to sent gifts history
+                    sentGifts.push({
+                        icon: selectedGift.icon,
+                        name: selectedGift.name,
+                        value: selectedGift.value,
+                        recipient: user.user,
+                        time: "Just now",
+                        timestamp: new Date()
+                    });
+                }
+            });
+            
+            // Show success message
+            showToast(`Sent ${selectedGift.icon} gift to ${selectedUsers.length} fan(s)!`);
+            
+            // Reset selection and close modal
+            resetGiftSelection();
+            closeModal();
+            
+            // Update emoji grid
+            renderEmojiGrid();
+        }
+        
+        // Reset gift selection
+        function resetGiftSelection() {
+            selectedGift = null;
+            selectedUsers = [];
+            
+            // Update UI
+            document.querySelectorAll('.emoji-item').forEach(gift => {
+                gift.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.comment-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            const selectedGiftDiv = document.getElementById('selected-gift');
+            const giftInstruction = document.getElementById('gift-instruction');
+            
+            selectedGiftDiv.style.display = 'none';
+            giftInstruction.textContent = 'First select a gift to send';
+            
+            document.getElementById('send-emoji-btn').disabled = true;
+        }
+        
+        // Show sent gifts
+        function setupViewSentGifts() {
+            document.getElementById('view-sent-gifts-btn').addEventListener('click', function() {
+                showSentGifts();
+            });
+        }
+        
+        // Show sent gifts section
+        function showSentGifts() {
+            const emojiPanel = document.getElementById('emoji-panel');
+            const sentGiftsSection = document.getElementById('sent-gifts-section');
+            const sentGiftsList = document.getElementById('sent-gifts-list');
+            
+            // Hide emoji panel, show sent gifts
+            emojiPanel.style.display = 'none';
+            sentGiftsSection.style.display = 'block';
+            
+            // Populate sent gifts list
+            sentGiftsList.innerHTML = '';
+            
+            // Sort by most recent first
+            const sortedGifts = [...sentGifts].sort((a, b) => b.timestamp - a.timestamp);
+            
+            if (sortedGifts.length === 0) {
+                sentGiftsList.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">No gifts sent yet</div>';
+            } else {
+                sortedGifts.forEach(gift => {
+                    const giftItem = document.createElement('div');
+                    giftItem.className = 'sent-gift-item';
+                    giftItem.innerHTML = `
+                        <div class="sent-gift-icon">${gift.icon}</div>
+                        <div class="sent-gift-details">
+                            <div class="sent-gift-recipient">To: ${gift.recipient}</div>
+                            <div class="sent-gift-info">${gift.name} - $${gift.value}.00</div>
+                            <div class="sent-gift-time">${gift.time}</div>
+                        </div>
+                    `;
+                    sentGiftsList.appendChild(giftItem);
+                });
+            }
+        }
+        
+        // Show gift panel
+        function showGiftPanel() {
+            const emojiPanel = document.getElementById('emoji-panel');
+            const sentGiftsSection = document.getElementById('sent-gifts-section');
+            
+            // Show emoji panel, hide sent gifts
+            emojiPanel.style.display = 'block';
+            sentGiftsSection.style.display = 'none';
+        }
+        
+        // Mute user function
+        function muteUser(userId) {
+            const comment = comments.find(c => c.id === userId);
+            comment.muted = true;
+            
+            // Add to muted fans list if not already there
+            if (!mutedFans.find(f => f.id === userId)) {
+                mutedFans.push({
+                    id: userId,
+                    user: comment.user,
+                    avatar: comment.avatar,
+                    reason: "Manually muted by artist"
+                });
+            }
+            
+            renderComments();
+            renderMutedFans();
+            
+            showToast(`Muted ${comment.user}`);
+        }
+        
+        // Unmute user function
+        function unmuteUser(userId) {
+            const comment = comments.find(c => c.id === userId);
+            if (comment) comment.muted = false;
+            
+            // Remove from muted fans list
+            const index = mutedFans.findIndex(f => f.id === userId);
+            if (index !== -1) {
+                mutedFans.splice(index, 1);
+            }
+            
+            renderComments();
+            renderMutedFans();
+            
+            showToast(`Unmuted ${comment ? comment.user : 'user'}`);
+        }
+        
+        // Reply to comment (placeholder function)
+        function replyToComment(commentId) {
+            const comment = comments.find(c => c.id === commentId);
+            showToast(`Replying to ${comment.user}'s comment`);
+        }
+        
+        // Filter buttons
+        function setupFilterButtons() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentFilter = this.dataset.filter;
+                    renderComments();
+                    
+                    showToast(`Showing ${this.textContent.toLowerCase()}`);
+                });
+            });
+        }
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize
+        function init() {
+            renderEmojiGrid();
+            renderComments();
+            renderMutedFans();
+            setupFilterButtons();
+            setupSendGift();
+            setupViewSentGifts();
+        }
+        
+        // Run initialization when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>

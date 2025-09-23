@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFIX DGXcore - Fan Notification System</title>
+    <style>
+        /* ===== Global Styles ===== */
+        :root {
+            --primary: #ff00cc;
+            --secondary: #3333ff;
+            --accent: #00ffcc;
+            --dark: #121212;
+            --light: #f8f8f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        /* ===== Gradient Text ===== */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        /* ===== Header/Navigation ===== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .back-btn {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: white;
+            color: var(--dark);
+        }
+        
+        /* ===== Dashboard Styles ===== */
+        .dashboard-container {
+            padding: 120px 5% 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .dashboard-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-subtitle {
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+        
+        /* ===== Notification System ===== */
+        .notification-system {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .notification-system {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .notification-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12L8 12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .form-submit {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 0, 204, 0.5);
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .preview-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .preview-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 300px;
+        }
+        
+        .notification-preview {
+            background: linear-gradient(135deg, rgba(255, 0, 204, 0.1), rgba(51, 51, 255, 0.1));
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .preview-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid var(--primary);
+        }
+        
+        .preview-artist {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .preview-time {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 3px;
+        }
+        
+        .preview-content {
+            margin-bottom: 15px;
+        }
+        
+        .preview-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            max-height: 180px;
+            object-fit: cover;
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .preview-button {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .preview-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .preview-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Audience Stats */
+        .audience-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 20px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo gradient-text">DFIX DGXcore</div>
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+    </header>
+    
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title gradient-text">Fan Notification System</h1>
+            <p class="dashboard-subtitle">Reach your fans with targeted messages</p>
+        </div>
+        
+        <div class="notification-system">
+            <!-- Notification Form -->
+            <div class="notification-form">
+                <h2 class="form-title"><i class="fas fa-bell"></i> Create Notification</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Notification Title</label>
+                    <input type="text" class="form-input" id="notification-title" placeholder="New Release: Neon Dreams" value="New Release: Neon Dreams">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Message Content</label>
+                    <textarea class="form-textarea" id="notification-content" placeholder="Share your message with fans...">Hey legends! My new track "Neon Dreams" is out now on all platforms! Click the link to stream it now 🎵</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Call-to-Action Button</label>
+                    <input type="text" class="form-input" id="notification-cta" placeholder="Listen Now" value="Listen Now">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Link URL</label>
+                    <input type="url" class="form-input" id="notification-url" placeholder="https://" value="https://music.dfixdgxcore.com/neondreams">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Target Audience</label>
+                    <select class="form-select" id="audience-tier">
+                        <option value="all">All Fans</option>
+                        <option value="top">Top Fans & Super Listeners</option>
+                        <option value="social">Social Media Followers</option>
+                        <option value="recent">Recently Active Fans</option>
+                        <option value="inactive">Inactive Fans (Re-engagement)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Platforms</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-app" checked>
+                            <label for="platform-app">Mobile App</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-email" checked>
+                            <label for="platform-email">Email</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-sms">
+                            <label for="platform-sms">SMS</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-social">
+                            <label for="platform-social">Social Media</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Schedule</label>
+                    <select class="form-select" id="notification-schedule">
+                        <option value="now">Send Immediately</option>
+                        <option value="1h">In 1 Hour</option>
+                        <option value="3h">In 3 Hours</option>
+                        <option value="6h">In 6 Hours</option>
+                        <option value="12h">In 12 Hours</option>
+                        <option value="24h">In 24 Hours</option>
+                        <option value="custom">Custom Time</option>
+                    </select>
+                </div>
+                
+                <button class="form-submit" onclick="sendNotification()">
+                    <i class="fas fa-paper-plane"></i> Send Notification
+                </button>
+            </div>
+            
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h2 class="preview-title"><i class="fas fa-eye"></i> Preview</h2>
+                
+                <div class="preview-container">
+                    <div class="notification-preview">
+                        <div class="preview-header">
+                            <img src="https://via.placeholder.com/50x50/ff00cc/121212?text=DFIX" alt="DFIX DGXcore" class="preview-avatar">
+                            <div>
+                                <div class="preview-artist">DFIX DGXcore</div>
+                                <div class="preview-time">Now</div>
+                            </div>
+                        </div>
+                        
+                        <div class="preview-content">
+                            <h3 id="preview-title">New Release: Neon Dreams</h3>
+                            <p id="preview-content">Hey legends! My new track "Neon Dreams" is out now on all platforms! Click the link to stream it now 🎵</p>
+                        </div>
+                        
+                        <img src="https://via.placeholder.com/400x200/ff00cc/121212?text=Neon+Dreams" alt="Notification Image" class="preview-image">
+                        
+                        <div class="preview-actions">
+                            <button class="preview-button preview-primary" id="preview-cta">Listen Now</button>
+                            <button class="preview-button preview-secondary">Dismiss</button>
+                        </div>
+                    </div>
+                    
+                    <div class="audience-stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="reach-value">8,452</div>
+                            <div class="stat-label">FANS WILL RECEIVE THIS</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">92%</div>
+                            <div class="stat-label">EXPECTED OPEN RATE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Notification sent successfully!</span>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Update preview in real-time
+        const titleInput = document.getElementById('notification-title');
+        const contentInput = document.getElementById('notification-content');
+        const ctaInput = document.getElementById('notification-cta');
+        const audienceSelect = document.getElementById('audience-tier');
+        const previewTitle = document.getElementById('preview-title');
+        const previewContent = document.getElementById('preview-content');
+        const previewCta = document.getElementById('preview-cta');
+        const reachValue = document.getElementById('reach-value');
+        
+        titleInput.addEventListener('input', updatePreview);
+        contentInput.addEventListener('input', updatePreview);
+        ctaInput.addEventListener('input', updatePreview);
+        audienceSelect.addEventListener('change', updateAudienceReach);
+        
+        function updatePreview() {
+            previewTitle.textContent = titleInput.value;
+            previewContent.textContent = contentInput.value;
+            previewCta.textContent = ctaInput.value;
+        }
+        
+        function updateAudienceReach() {
+            const audience = audienceSelect.value;
+            let reach = 0;
+            
+            switch(audience) {
+                case 'all':
+                    reach = 24521;
+                    break;
+                case 'top':
+                    reach = 8452;
+                    break;
+                case 'social':
+                    reach = 15230;
+                    break;
+                case 'recent':
+                    reach = 11245;
+                    break;
+                case 'inactive':
+                    reach = 8930;
+                    break;
+            }
+            
+            reachValue.textContent = reach.toLocaleString();
+        }
+        
+        // Initialize
+        updatePreview();
+        updateAudienceReach();
+        
+        // Send notification
+        function sendNotification() {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            // Get form values
+            const title = titleInput.value;
+            const audience = audienceSelect.options[audienceSelect.selectedIndex].text;
+            
+            // Show success message
+            toastMessage.textContent = `Notification sent to ${audience}!`;
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Platform selection visual feedback
+        const platformCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+        platformCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    this.parentElement.style.color = 'var(--accent)';
+                } else {
+                    this.parentElement.style.color = 'white';
+                }
+            });
+            
+            // Initialize colors
+            if (checkbox.checked) {
+                checkbox.parentElement.style.color = 'var(--accent)';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifestyle | DFIX DGXcore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ===== Global Styles ===== */
+        :root {
+            --primary: #ff00cc;
+            --secondary: #3333ff;
+            --accent: #00ffcc;
+            --dark: #121212;
+            --light: #f8f8f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for player */
+        }
+        
+        /* ===== Gradient Text ===== */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+       /* Center search container */
+.search-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 40px; /* removes extra top margin */
+  padding: 0 20px;
+  text-align: center;
+}
+
+
+        .search-box {
+          display: flex;
+          align-items: center;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 50px;
+          padding: 12px 20px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .search-box:focus-within {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: var(--accent);
+          box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
+        .search-box i {
+          color: var(--accent);
+          font-size: 18px;
+          margin-right: 12px;
+        }
+
+        .search-box input {
+          background: transparent;
+          border: none;
+          color: white;
+          padding: 8px 0;
+          width: 100%;
+          font-size: 16px;
+          outline: none;
+        }
+
+        .search-box input::placeholder {
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        .clear-search {
+          background: rgba(255, 255, 255, 0.1);
+          border: none;
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-left: 10px;
+        }
+
+        .clear-search:hover {
+          background: rgba(255, 255, 255, 0.2);
+          transform: scale(1.1);
+        }
+
+        .filter-options {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 15px;
+        }
+
+        .filter-title {
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .filter-buttons {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .filter-btn {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          padding: 8px 16px;
+          color: white;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-btn.active {
+          background: linear-gradient(90deg, var(--primary), var(--secondary));
+          border-color: transparent;
+        }
+
+        .genre-dropdown {
+          margin-left: auto;
+        }
+
+        .genre-dropdown select {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 8px 12px;
+          color: white;
+          font-size: 14px;
+          outline: none;
+          cursor: pointer;
+        }
+
+        .genre-dropdown select option {
+          background: var(--dark);
+          color: white;
+        }
+
+        .search-results-info {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 14px;
+          text-align: center;
+          padding: 10px 0;
+        }
+
+        /* No results message */
+        .no-results {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 40px;
+          color: rgba(255,255,255,0.5);
+        }
+
+        .no-results i {
+          font-size: 48px;
+          margin-bottom: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .filter-options {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          
+          .genre-dropdown {
+            margin-left: 0;
+            width: 100%;
+          }
+          
+          .genre-dropdown select {
+            width: 100%;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .search-container {
+            padding: 0 10px;
+          }
+          
+          .filter-buttons {
+            justify-content: space-between;
+            width: 100%;
+          }
+          
+          .filter-btn {
+            flex: 1;
+            text-align: center;
+            min-width: 0;
+            padding: 8px 10px;
+            font-size: 12px;
+          }
+        }
+        
+        /* ===== Header/Navigation ===== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .desktop-nav ul {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .desktop-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .desktop-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+        
+        .desktop-nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* ===== Hamburger Menu ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+        
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: white;
+            border-radius: 5px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+        
+        .hamburger.open span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+        
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.open span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+        
+        /* ===== Sidebar ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 80px 30px 30px;
+            z-index: 999;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .sidebar.open {
+            right: 0;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            display: block;
+            padding: 10px 0;
+            transition: color 0.3s;
+        }
+        
+        .sidebar-nav a:hover {
+            color: var(--accent);
+        }
+        
+        /* ===== Lifestyle Section ===== */
+        .lifestyle-section {
+            padding: 150px 5% 100px;
+            min-height: 100vh;
+        }
+        
+        .section-title {
+            font-size: 48px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        /* ===== Artist Grid ===== */
+        .artist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .artist-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .artist-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .artist-bg {
+            height: 150px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .artist-profile {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--dark);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .artist-profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .artist-info {
+            padding: 80px 20px 20px;
+            text-align: center;
+        }
+        
+        .artist-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .artist-fans {
+            color: var(--accent);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .artist-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.1);
+            background: var(--primary);
+        }
+        
+        /* ===== Floating Bubbles ===== */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                bottom: -100px;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+                bottom: 100%;
+            }
+        }
+        
+        /* ===== Responsive Design ===== */
+        @media (max-width: 900px) {
+            .desktop-nav {
+                display: none;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 36px;
+            }
+            
+            .artist-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .artist-info {
+                padding: 70px 15px 15px;
+            }
+            
+            .artist-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Bubbles -->
+    <div class="bubbles" id="bubbles"></div>
+    
+    <!-- Header -->
+    <header>
+        <div class="logo gradient-text">DFIX DGXcore</div>
+        <nav class="desktop-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html#music">Music</a></li>
+                <li><a href="../video_content/video.html">Videos</a></li>
+                
+                <li><a href="../social_content/social.html">Lifestyle</a></li>
+                <li><a href="index.html#community">Community</a></li>
+            </ul>
+        </nav>
+        
+        <button class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html#music">Music</a></li>
+                <li><a href="../video_content/video.html">Videos</a></li>
+                
+                <li><a href="../social_content/social.html">Lifestyle</a></li>
+                <li><a href="index.html#community">Community</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Lifestyle Section -->
+ <section class="lifestyle-section" id="life-style">
+  <h2 class="section-title gradient-text">ARTIST <span>LIFESTYLE</span></h2>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="artist-search-input" placeholder="Search for an artist...">
+      <button class="clear-search" id="clear-search" style="display: none;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Filter Options -->
+    <div class="filter-options">
+      <div class="filter-title">Filter by:</div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All Artists</button>
+        <button class="filter-btn" data-filter="popular">Most Popular</button>
+        <button class="filter-btn" data-filter="new">New Artists</button>
+        <button class="filter-btn" data-filter="genre">By Genre</button>
+      </div>
+
+      <!-- Genre Dropdown -->
+      <div class="genre-dropdown" id="genre-dropdown" style="display: none;">
+        <select id="genre-select">
+          <option value="all">All Genres</option>
+          <option value="electronic">Electronic</option>
+          <option value="hiphop">Hip Hop</option>
+          <option value="pop">Pop</option>
+          <option value="rnb">R&B</option>
+          <option value="rock">Rock</option>
+          <option value="alternative">Alternative</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Search Results Count -->
+    <div class="search-results-info" id="search-results-info">
+      Showing all artists
+    </div>
+  </div>
+
+  <!-- Artists Grid -->
+  <div class="artist-grid" id="artist-grid">
+
+    <!-- DFIX DGXcore -->
+    <div class="artist-card" data-artist="dfix dgxcore" data-genre="electronic" data-popular="true" data-new="false">
+      <div class="artist-bg" style="background: linear-gradient(45deg, var(--primary), var(--secondary));"></div>
+      <div class="artist-profile">
+        <img src="at1.jpg" alt="DFIX DGXcore">
+      </div>
+      <div class="artist-info">
+        <h3 class="artist-name">DFIX DGXcore</h3>
+        <div class="artist-fans">1.2M Fans</div>
+        <p>Electronic music producer and DJ pushing the boundaries of futuristic soundscapes.</p>
+        <div class="artist-social">
+          <a href="https://instagram.com/dfixdgxcore" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@dfixdgxcore" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://twitter.com/dfixdgxcore" class="social-icon" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a href="https://youtube.com/dfixdgxcore" class="social-icon" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Binash -->
+    <div class="artist-card" data-artist="binash" data-genre="rnb" data-popular="true" data-new="false">
+      <div class="artist-bg" style="background: linear-gradient(45deg, #ff6b6b, #ffa726);"></div>
+      <div class="artist-profile">
+        <img src="at4.jpg" alt="Binash">
+      </div>
+      <div class="artist-info">
+        <h3 class="artist-name">Binash</h3>
+        <div class="artist-fans">850K Fans</div>
+        <p>Alternative R&B singer with a unique vocal style and emotional depth.</p>
+        <div class="artist-social">
+          <a href="https://instagram.com/binash" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@binash" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://soundcloud.com/binash" class="social-icon" target="_blank"><i class="fab fa-soundcloud"></i></a>
+          <a href="https://spotify.com/binash" class="social-icon" target="_blank"><i class="fab fa-spotify"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diodeo -->
+    <div class="artist-card" data-artist="diodeo" data-genre="electronic" data-popular="false" data-new="true">
+      <div class="artist-bg" style="background: linear-gradient(45deg, #4ecdc4, #44a08d);"></div>
+      <div class="artist-profile">
+        <img src="at3.jpg" alt="Diodeo">
+      </div>
+      <div class="artist-info">
+        <h3 class="artist-name">Diodeo</h3>
+        <div class="artist-fans">720K Fans</div>
+        <p>Experimental electronic artist known for intricate sound design.</p>
+        <div class="artist-social">
+          <a href="https://instagram.com/diodeo" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@diodeo" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://bandcamp.com/diodeo" class="social-icon" target="_blank"><i class="fab fa-bandcamp"></i></a>
+          <a href="https://twitch.com/diodeo" class="social-icon" target="_blank"><i class="fab fa-twitch"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cherry Voice -->
+    <div class="artist-card" data-artist="cherry voice" data-genre="pop" data-popular="true" data-new="false">
+      <div class="artist-bg" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);"></div>
+      <div class="artist-profile">
+        <img src="at2.jpg" alt="Cherry Voice">
+      </div>
+      <div class="artist-info">
+        <h3 class="artist-name">Cherry Voice</h3>
+        <div class="artist-fans">950K Fans</div>
+        <p>Pop sensation with a powerful voice and captivating stage presence.</p>
+        <div class="artist-social">
+          <a href="https://instagram.com/cherryvoice" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@cherryvoice" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://facebook.com/cherryvoice" class="social-icon" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="https://snapchat.com/add/cherryvoice" class="social-icon" target="_blank"><i class="fab fa-snapchat"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nova Rhythm -->
+    <div class="artist-card" data-artist="nova rhythm" data-genre="electronic" data-popular="false" data-new="true">
+      <div class="artist-bg" style="background: linear-gradient(45deg, #a8edea, #fed6e3);"></div>
+      <div class="artist-profile">
+        <img src="https://via.placeholder.com/300x300/3333ff/ffffff?text=Artist+5" alt="Nova Rhythm">
+      </div>
+      <div class="artist-info">
+        <h3 class="artist-name">Nova Rhythm</h3>
+        <div class="artist-fans">680K Fans</div>
+        <p>Drum and bass producer creating high-energy tracks for the dancefloor.</p>
+        <div class="artist-social">
+          <a href="https://instagram.com/novarhythm" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@novarhythm" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://mixcloud.com/novarhythm" class="social-icon" target="_blank"><i class="fab fa-mixcloud"></i></a>
+          <a href="https://apple.co/novarhythm" class="social-icon" target="_blank"><i class="fab fa-apple"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Synth Wave -->
+    <div class="artist-card" data-artist="synth wave" data-genre="electronic" data-popular="false" data-new="false">
+      <div class="artist-bg" style="background: linear-gradient(45deg, #ffd89b, #19547b);"></div>
+      <div class="artist-profile">
+        <img src="https://via.placeholder.com/300x300/00ffcc/ffffff?text=Artist+6" alt="Synth Wave">
+      </div>
+      <div class="artist-info">
+        <h3 class="artist-name">Synth Wave</h3>
+        <div class="artist-fans">540K Fans</div>
+        <p>Retro-futuristic synthwave artist bringing 80s vibes to modern audiences.</p>
+        <div class="artist-social">
+          <a href="https://instagram.com/synthwave" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@synthwave" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://patreon.com/synthwave" class="social-icon" target="_blank"><i class="fab fa-patreon"></i></a>
+          <a href="https://discord.gg/synthwave" class="social-icon" target="_blank"><i class="fab fa-discord"></i></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+    <script>
+        // ===== SEARCH FUNCTIONALITY =====
+        document.addEventListener('DOMContentLoaded', function() {
+          const searchInput = document.getElementById('artist-search-input');
+          const clearSearchBtn = document.getElementById('clear-search');
+          const filterButtons = document.querySelectorAll('.filter-btn');
+          const genreDropdown = document.getElementById('genre-dropdown');
+          const genreSelect = document.getElementById('genre-select');
+          const searchResultsInfo = document.getElementById('search-results-info');
+          const artistGrid = document.getElementById('artist-grid');
+          const artistCards = document.querySelectorAll('.artist-card');
+          
+          let currentFilter = 'all';
+          let currentGenre = 'all';
+          let searchTimeout;
+          
+          // Show/hide clear button based on input
+          searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+              clearSearchBtn.style.display = 'flex';
+            } else {
+              clearSearchBtn.style.display = 'none';
+            }
+            
+            // Debounce search
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+              filterArtists();
+            }, 300);
+          });
+          
+          // Clear search input
+          clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            filterArtists();
+            searchInput.focus();
+          });
+          
+          // Filter button functionality
+          filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+              // Remove active class from all buttons
+              filterButtons.forEach(btn => btn.classList.remove('active'));
+              
+              // Add active class to clicked button
+              this.classList.add('active');
+              
+              // Update current filter
+              currentFilter = this.dataset.filter;
+              
+              // Show/hide genre dropdown
+              if (currentFilter === 'genre') {
+                genreDropdown.style.display = 'block';
+              } else {
+                genreDropdown.style.display = 'none';
+                currentGenre = 'all';
+              }
+              
+              filterArtists();
+            });
+          });
+          
+          // Genre selection functionality
+          genreSelect.addEventListener('change', function() {
+            currentGenre = this.value;
+            filterArtists();
+          });
+          
+          // Filter artists based on search and filters
+          function filterArtists() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let visibleCount = 0;
+            
+            // Filter artists based on search term and active filters
+            artistCards.forEach(card => {
+              const artistName = card.dataset.artist.toLowerCase();
+              const artistGenre = card.dataset.genre;
+              const isPopular = card.dataset.popular === 'true';
+              const isNew = card.dataset.new === 'true';
+              
+              // Text search
+              const matchesSearch = artistName.includes(searchTerm);
+              
+              // Filter by category
+              let matchesFilter = true;
+              if (currentFilter === 'popular') {
+                matchesFilter = isPopular;
+              } else if (currentFilter === 'new') {
+                matchesFilter = isNew;
+              } else if (currentFilter === 'genre' && currentGenre !== 'all') {
+                matchesFilter = artistGenre === currentGenre;
+              }
+              
+              // Show or hide card based on filters
+              if (matchesSearch && matchesFilter) {
+                card.style.display = 'block';
+                visibleCount++;
+              } else {
+                card.style.display = 'none';
+              }
+            });
+            
+            // Show no results message if needed
+            const noResultsElement = document.querySelector('.no-results');
+            if (visibleCount === 0) {
+              if (!noResultsElement) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-results';
+                noResults.innerHTML = `
+                  <i class="fas fa-search"></i>
+                  <h3>No artists found</h3>
+                  <p>Try adjusting your search or filters</p>
+                `;
+                artistGrid.appendChild(noResults);
+              }
+            } else if (noResultsElement) {
+              noResultsElement.remove();
+            }
+            
+            // Update results info
+            updateResultsInfo(visibleCount, searchTerm);
+          }
+          
+          // Update search results information
+          function updateResultsInfo(count, searchTerm) {
+            if (searchTerm) {
+              if (count === 0) {
+                searchResultsInfo.textContent = `No artists found for "${searchTerm}"`;
+              } else if (count === 1) {
+                searchResultsInfo.textContent = `Found 1 artist for "${searchTerm}"`;
+              } else {
+                searchResultsInfo.textContent = `Found ${count} artists for "${searchTerm}"`;
+              }
+            } else {
+              if (currentFilter === 'all' && currentGenre === 'all') {
+                searchResultsInfo.textContent = `Showing all ${count} artists`;
+              } else {
+                let filterText = '';
+                
+                if (currentFilter === 'popular') {
+                  filterText = 'popular ';
+                } else if (currentFilter === 'new') {
+                  filterText = 'new ';
+                } else if (currentFilter === 'genre' && currentGenre !== 'all') {
+                  const genreText = genreSelect.options[genreSelect.selectedIndex].text;
+                  filterText = `${genreText} `;
+                }
+                
+                searchResultsInfo.textContent = `Showing ${count} ${filterText}artists`;
+              }
+            }
+          }
+          
+          // Initialize with all artists visible
+          filterArtists();
+        });
+
+        // Create floating bubbles
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            const bubbleCount = 20;
+
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+
+                const size = Math.random() * 60 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+
+                bubble.style.left = `${Math.random() * 100}%`;
+
+                const duration = Math.random() * 20 + 10;
+                bubble.style.animationDuration = `${duration}s`;
+
+                bubble.style.animationDelay = `${Math.random() * 10}s`;
+
+                bubble.style.opacity = Math.random() * 0.3 + 0.1;
+
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // Sidebar functionality
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            hamburger.classList.toggle('open');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            hamburger.classList.remove('open');
+        }
+
+        hamburger.addEventListener('click', toggleSidebar);
+
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', closeSidebar);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createBubbles();
+        });
+    </script>
+</body>
+</html>

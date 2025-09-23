@@ -1,0 +1,330 @@
+
+
+/* ===== ARTIST INFO SECTION ===== */
+.artist-info-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.info-search {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0 15px;
+    width: 300px;
+}
+
+.info-search input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px 0;
+    width: 100%;
+    outline: none;
+}
+
+.info-search i {
+    color: var(--accent);
+    margin-right: 10px;
+}
+
+/* ===== ARTIST DETAILS ===== */
+.artist-details {
+    display: none;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.artist-profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.artist-profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 3px solid var(--primary);
+}
+
+.artist-profile-info {
+    flex-grow: 1;
+}
+
+.artist-profile-name {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.artist-profile-email {
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.artist-profile-status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.artist-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.details-group {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 14px 16px;
+    border-radius: 10px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.details-group:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.details-label {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.details-value {
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+}
+
+.artist-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-suspend {
+    background: var(--warning);
+    color: black;
+}
+
+.btn-remove {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-suspend:hover {
+    background: #e6b800;
+}
+
+.btn-remove:hover {
+    background: #e62e5c;
+}
+
+/* ===== ARTIST RECORDS ===== */
+.artist-records-container {
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+.artist-records-wrapper {
+    overflow-x: auto;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+#artist-records-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px;
+}
+
+#artist-records-table th, #artist-records-table td {
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: left;
+    white-space: nowrap;
+}
+
+#artist-records-table th {
+    background: rgba(255,255,255,0.05);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#artist-records-table tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Action buttons in table */
+.table-action-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    border: none;
+    margin-right: 5px;
+}
+
+.btn-view {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-delete {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-restore {
+    background: var(--success);
+    color: white;
+}
+
+ /* ===== Artist Management ===== */
+        .artist-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0 15px;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 0;
+            width: 100%;
+            outline: none;
+        }
+        
+        .search-box i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+        
+        .artists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .artist-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .artist-card.expiring {
+            border-color: var(--warning);
+        }
+        
+        .artist-card.expired {
+            border-color: var(--danger);
+        }
+        
+        .artist-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .artist-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .artist-name {
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        
+        .artist-email {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        .password-field {
+         font-family: monospace;
+         background: rgba(255, 255, 255, 0.1);
+         padding: 4px 8px;
+         border-radius: 4px;
+         margin-right: 5px;
+        }
+
+        .copy-btn-small {
+         background: var(--primary);
+         color: white;
+         border: none;
+         padding: 4px 8px;
+         border-radius: 4px;
+         cursor: pointer;
+         font-size: 12px;
+        }
+
+        .copy-btn-small:hover {
+         background: var(--secondary);
+        }

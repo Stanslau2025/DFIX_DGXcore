@@ -1,0 +1,2030 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFIX DGXcore - Official Website</title>
+    
+   <style>
+    /* ===== Global Styles ===== */
+    :root {
+        --primary: #ff00cc;
+        --secondary: #3333ff;
+        --accent: #00ffcc;
+        --dark: #121212;
+        --light: #f8f8f8;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    body {
+        background-color: var(--dark);
+        color: var(--light);
+        overflow-x: hidden;
+        padding-bottom: 80px; /* Space for player */
+    }
+    
+    /* ===== Gradient Text ===== */
+    .gradient-text {
+        background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+    }
+    
+    /* ===== Header/Navigation ===== */
+    header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .logo {
+        font-size: 28px;
+        font-weight: 700;
+    }
+    
+    .desktop-nav ul {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+    }
+    
+    .desktop-nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+        padding: 5px 0;
+    }
+    
+    .desktop-nav a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transition: width 0.3s;
+    }
+    
+    .desktop-nav a:hover::after {
+        width: 100%;
+    }
+    
+    /* ===== Hamburger Menu ===== */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 30px;
+        height: 25px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 10;
+    }
+    
+    .hamburger span {
+        width: 30px;
+        height: 3px;
+        background: white;
+        border-radius: 5px;
+        transition: all 0.3s linear;
+        position: relative;
+        transform-origin: 1px;
+    }
+    
+    .hamburger.open span:nth-child(1) {
+        transform: rotate(45deg);
+    }
+    
+    .hamburger.open span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.open span:nth-child(3) {
+        transform: rotate(-45deg);
+    }
+    
+    /* ===== Sidebar ===== */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 300px;
+        height: 100vh;
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 80px 30px 30px;
+        z-index: 999;
+        transition: right 0.3s ease;
+        overflow-y: auto;
+    }
+    
+    .sidebar.open {
+        right: 0;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+    }
+    
+    .sidebar-nav ul {
+        list-style: none;
+    }
+    
+    .sidebar-nav li {
+        margin-bottom: 20px;
+    }
+    
+    .sidebar-nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 500;
+        display: block;
+        padding: 10px 0;
+        transition: color 0.3s;
+    }
+    
+    .sidebar-nav a:hover {
+        color: var(--accent);
+    }
+    
+    .sidebar-auth, .sidebar-dashboard {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-auth button, .sidebar-dashboard button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    /* ===== Auth Buttons ===== */
+    .auth-buttons, .dashboard-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    /* ===== Auth Dialogs ===== */
+    .auth-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+    }
+    
+    .auth-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .auth-dialog {
+        background: #1E1E1E;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 450px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: translateY(20px);
+        transition: transform 0.3s;
+    }
+    
+    .auth-overlay.active .auth-dialog {
+        transform: translateY(0);
+    }
+    
+    .auth-dialog h2 {
+        color: white;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .auth-field {
+        margin-bottom: 15px;
+    }
+    
+    .auth-field input {
+        width: 100%;
+        padding: 12px 15px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 4px;
+        color: white;
+        font-size: 16px;
+    }
+    
+    .auth-field input:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+    
+    .auth-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+    
+    .auth-switch {
+        background: none;
+        border: none;
+        color: var(--accent);
+        cursor: pointer;
+        font-size: 14px;
+    }
+    
+    .auth-submit {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    
+    /* ===== Hero Section ===== */
+    .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 0 10%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(-45deg, var(--primary), var(--secondary), var(--accent));
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        z-index: -1;
+        opacity: 0.7;
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .hero-content {
+        max-width: 600px;
+    }
+    
+    .hero h1 {
+        font-size: 72px;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+    
+    .hero p {
+        font-size: 18px;
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+    
+    /* Floating Bubbles */
+    .bubbles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -10;
+    }
+    
+    .bubble {
+        position: absolute;
+        bottom: -100px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float linear infinite;
+        pointer-events: none;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+            bottom: -100px;
+        }
+        100% {
+            transform: translateY(-100vh) rotate(360deg);
+            opacity: 0;
+            bottom: 100%;
+        }
+    }
+    
+    /* ===== Gradient Buttons ===== */
+    .btn {
+        display: inline-block;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: white;
+        background-size: 200% auto;
+        box-shadow: 0 4px 20px rgba(255, 0, 204, 0.3);
+    }
+    
+    .btn-primary:hover {
+        background-position: right center;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(255, 0, 204, 0.5);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        margin-left: 15px;
+    }
+    
+    .btn-outline:hover {
+        background: white;
+        color: var(--dark);
+    }
+    
+    /* ===== Music Section ===== */
+    .section {
+        padding: 100px 10%;
+    }
+    
+    .section-title {
+        font-size: 30px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    /* ===== NEW: Upgraded Music Container ===== */
+    .music-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Search bar */
+    .search-container {
+        width: 100%;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        padding: 8px 20px;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        width: 100%;
+        font-size: 16px;
+        outline: none;
+    }
+    
+    .search-box i {
+        color: var(--accent);
+        font-size: 18px;
+    }
+    
+    /* Artist carousel */
+    .artist-carousel {
+        width: 100%;
+        height: 200px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    
+    .artist-item {
+        position: absolute;
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .artist-item.back-left {
+        transform: translateX(-180px) scale(0.7);
+        opacity: 0.6;
+        z-index: 1;
+    }
+    
+    .artist-item.back-right {
+        transform: translateX(180px) scale(0.7);
+        opacity: 0.6;
+        z-index: 1;
+    }
+    
+    .artist-item.left {
+        transform: translateX(-100px) scale(0.85);
+        opacity: 0.8;
+        z-index: 2;
+    }
+    
+    .artist-item.right {
+        transform: translateX(100px) scale(0.85);
+        opacity: 0.8;
+        z-index: 2;
+    }
+    
+    .artist-item.center {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+        z-index: 3;
+    }
+    
+    .artist-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .artist-item.center .artist-image {
+        border-color: var(--primary);
+        box-shadow: 0 10px 50px rgba(255, 0, 204, 0.5);
+        transform: scale(1.1);
+    }
+    
+    .artist-name {
+        font-size: 16px;
+        margin-top: 10px;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .artist-item.center .artist-name {
+        color: var(--accent);
+        padding-top: 30px;
+        font-size: 19px;
+    }
+    
+    /* Navigation arrows for artist carousel */
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 5;
+        pointer-events: none;
+    }
+    
+    .carousel-nav button {
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: all 0.3s;
+    }
+    
+    .carousel-nav button:hover {
+        background: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+    }
+    
+    /* Content carousel */
+    .content-container {
+        width: 100%;
+        position: relative;
+    }
+    
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .content-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+    
+    .view-all {
+        color: var(--accent);
+        font-size: 14px;
+        cursor: pointer;
+    }
+    
+    .content-scroll {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 10px 5px 20px;
+        scrollbar-width: none;
+    }
+    
+    .content-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .content-item {
+        min-width: 150px;
+        height: 180px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .content-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+    }
+    
+    .content-image {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+    }
+    
+    .content-info {
+        padding: 10px;
+    }
+    
+    .content-item-title {
+        font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+    }
+    
+    .content-item-artist {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-bottom: 8px;
+    }
+    
+    .favorite-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .favorite-btn:hover {
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .favorite-btn.active {
+        color: var(--primary);
+    }
+    
+    /* Favorites section */
+    .favorites-section {
+        width: 100%;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* ===== Audio Player ===== */
+    .player-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 15px 5%;
+        display: flex;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .player-info {
+    position: fixed;
+    bottom: 66px; /* moves it just above the footer player-container */
+    left: 0.5px;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 6px 12px  2px 2px ;
+    border-radius: 10px;
+    z-index: 1000; /* higher than .player-container */
+    }
+    
+    .player-album-art {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        margin-right: 15px;
+    }
+    
+    .player-text h4 {
+        font-size: 16px;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+    
+    .player-text p {
+        font-size: 12px;
+        opacity: 0.7;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+    
+    .player-controls {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .player-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .player-btn:hover {
+        color: var(--primary);
+        transform: scale(1.1);
+    }
+    
+    .play-pause {
+        font-size: 28px;
+    }
+    
+    .progress-container {
+        flex: 2;
+        margin: 0 20px;
+    }
+    
+    .progress-bar {
+        height: 4px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    
+    .progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+        width: 0%;
+    }
+    
+    .time {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 12px;
+        opacity: 0.7;
+    }
+    
+    /* ===== Dashboard Styles ===== */
+    .dashboard {
+        min-height: 100vh;
+        padding: 100px 5% 80px;
+        display: none;
+    }
+    
+    .dashboard.active {
+        display: block;
+    }
+    
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .dashboard-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+    
+    .dashboard-title {
+        font-size: 36px;
+        margin-bottom: 10px;
+        padding-top: 5px;
+    }
+    
+    .dashboard-subtitle {
+        opacity: 0.8;
+        margin-bottom: 30px;
+    }
+    
+    .dashboard-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .dashboard-action-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .dashboard-action-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .dashboard-action-btn i {
+        font-size: 32px;
+        margin-bottom: 15px;
+        display: block;
+    }
+    
+    /* ===== Responsive Design ===== */
+    @media (max-width: 1024px) {
+        .desktop-nav ul {
+            gap: 20px;
+        }
+    }
+    
+    @media (max-width: 900px) {
+        .desktop-nav {
+            display: none;
+        }
+        
+        .auth-buttons, .dashboard-buttons {
+            display: none;
+        }
+        
+        .hamburger {
+            display: flex;
+        }
+        
+        .carousel-nav {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 48px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .btn-outline {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+        
+        .artist-carousel {
+            height: 180px;
+        }
+        
+        .artist-item.back-left {
+            transform: translateX(-140px) scale(0.7);
+        }
+        
+        .artist-item.back-right {
+            transform: translateX(140px) scale(0.7);
+        }
+        
+        .artist-item.left {
+            transform: translateX(-80px) scale(0.85);
+        }
+        
+        .artist-item.right {
+            transform: translateX(80px) scale(0.85);
+        }
+        
+        .artist-image {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .content-item {
+            min-width: 130px;
+            height: 170px;
+        }
+        
+        .dashboard-actions {
+            grid-template-columns: 1fr;
+        }
+        
+        .player-text h4,
+        .player-text p {
+            max-width: 120px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 36px;
+        }
+        
+        .hero p {
+            font-size: 16px;
+        }
+        
+        .artist-carousel {
+            height: 160px;
+        }
+        
+        .artist-item.back-left {
+            transform: translateX(-110px) scale(0.6);
+        }
+        
+        .artist-item.back-right {
+            transform: translateX(110px) scale(0.6);
+        }
+        
+        .artist-item.left {
+            transform: translateX(-60px) scale(0.8);
+        }
+        
+        .artist-item.right {
+            transform: translateX(60px) scale(0.8);
+        }
+        
+        .artist-image {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .content-item {
+            min-width: 120px;
+            height: 160px;
+        }
+        
+        .section-title {
+            font-size: 36px;
+        }
+        
+        .sidebar {
+            width: 250px;
+        }
+        
+        .player-text h4,
+        .player-text p {
+            max-width: 80px;
+        }
+        
+        .progress-container {
+            flex: 1;
+        }
+    }
+</style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Floating Bubbles -->
+    <div class="bubbles" id="bubbles"></div>
+    
+    <!-- Header -->
+    <header>
+        <div class="logo gradient-text">DFIX DGXcore</div>
+        <nav class="desktop-nav">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#music">Music</a></li>
+                <li><a href="video_content/video.html">Videos</a></li>
+                <li><a href="#artists" id="artists-link">Artists</a></li>
+                <li><a href="social_content/social.html">Lifestyle</a></li>
+                <li><a href="#community">Community</a></li>
+            </ul>
+        </nav>
+        
+        <div class="auth-buttons" id="auth-buttons">
+            <button class="btn btn-outline" id="login-btn">Login</button>
+            <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+        </div>
+        
+        <div class="dashboard-buttons" id="dashboard-buttons" style="display: none;">
+            <button class="btn btn-outline" id="back-btn"> Back </button>
+        </div>
+        
+        <button class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#music">Music</a></li>
+                <li><a href="video_content/video.htmlS">Videos</a></li>
+                <li><a href="#artists" id="sidebar-artists-link">Artists</a></li>
+                <li><a href="social_content/social.html">Lifestyle</a></li>
+                <li><a href="#community">Community</a></li>
+            </ul>
+            
+            <div class="sidebar-auth" id="sidebar-auth">
+                <button class="btn btn-primary" id="sidebar-login-btn">Login</button>
+                <button class="btn btn-outline" id="sidebar-signup-btn">Sign Up</button>
+            </div>
+            
+            <div class="sidebar-dashboard" id="sidebar-dashboard" style="display: none;">
+                <button class="btn btn-outline" id="sidebar-back-btn"> Back </button>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- Auth Dialogs -->
+    <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-dialog" id="auth-dialog">
+            <!-- Content will be dynamically inserted -->
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>LISTEN TO MY <span class="gradient-text"><br>NEW SONG </span></h1>
+                <p>The latest release from your favorite artist. Stream now on all platforms.</p>
+                <div class="hero-buttons">
+                    <a href="#music" class="btn btn-primary">PLAY NOW</a>
+                    <a href="#videos" class="btn btn-outline">WATCH VIDEO</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Music Section -->
+        <section class="section" id="music">
+            <h2 class="section-title gradient-text">MY <span>MUSIC</span></h2>
+            
+            <!-- Upgraded Music Container -->
+            <div class="music-container">
+                <!-- Search Box -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="artist-search" placeholder="Search for an artist...">
+                    </div>
+                </div>
+                
+                <!-- Artist Carousel -->
+                <div class="artist-carousel">
+                    <!-- Navigation Arrows -->
+                    <div class="carousel-nav">
+                        <button id="prev-artist"><i class="fas fa-chevron-left"></i></button>
+                        <button id="next-artist"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <!-- Artist Items -->
+                    <div class="artist-item back-left" data-artist="artist4">
+                        <img src="https://via.placeholder.com/300x300/3333ff/ffffff?text=Artist+4" alt="Artist 4" class="artist-image">
+                        <div class="artist-name">Artist 4</div>
+                    </div>
+                    
+                    
+                    <div class="artist-item left" data-artist="artist1">
+                        <img src="artist_asset/at4.jpg" alt="Artist 1" class="artist-image">
+                        <div class="artist-name">Binash</div>
+                    </div>
+                    
+                    <div class="artist-item center" data-artist="dfix-dgxcore">
+                        <img src="artist_asset/at1.jpg" alt="DFIX DGXcore" class="artist-image">
+                        <div class="artist-name">DFIX DGXcore</div>
+                    </div>
+                    
+                    <div class="artist-item right" data-artist="artist2">
+                        <img src="artist_asset/at3.jpg" alt="Artist 2" class="artist-image">
+                        <div class="artist-name">Diodeo</div>
+                    </div>
+                    
+                    <div class="artist-item back-right" data-artist="artist3">
+                        <img src="artist_asset/at2.jpg" alt="Artist 3" class="artist-image">
+                        <div class="artist-name">Cherry voice</div>
+                    </div>
+                </div>
+                
+                <!-- Content Section -->
+                <div class="content-container">
+                    <div class="content-header">
+                        <h3 class="content-title">Popular Releases</h3>
+                        <div class="view-all">View All</div>
+                    </div>
+                    
+                    <div class="content-scroll" id="content-scroll">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Favorites Section -->
+                <div class="favorites-section">
+                    <div class="content-header">
+                        <h3 class="content-title">Your Favorites</h3>
+                    </div>
+                    
+                    <div class="content-scroll" id="favorites-scroll">
+                        <!-- Favorites will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+          
+          <!-- Dashboards -->
+   <div id="artist-dashboard" class="dashboard">
+    <div class="dashboard-header">
+        <div class="dashboard-icon" style="color: #ff00cc;">
+            <i class="fas fa-music-note"></i>
+        </div>
+        <h2 class="dashboard-title">Artist Dashboard</h2>
+        <p class="dashboard-subtitle">Welcome back, DFIX DGXcore!</p>
+    </div>
+    
+    <div class="dashboard-actions">
+
+        <div class="dashboard-action-btn" onclick="window.location.href='Artist_dashed/artist_song_notification.html'">
+            <i class="fas fa-bell"></i>
+            <h3>Send Notification</h3>
+            <p>Notify your fans about new releases</p>
+        </div>
+
+        <div class="dashboard-action-btn" onclick="window.location.href='Artist_dashed/artist_dash.html'">
+            <i class="fas fa-chart-line"></i>
+            <h3>View Song Performance</h3>
+            <p>Analyze your music statistics</p>
+        </div>
+
+        <div class="dashboard-action-btn" onclick="window.location.href='Artist_dashed/artist_upload.html'">
+            <i class="fas fa-upload"></i>
+            <h3>Upload New Music</h3>
+            <p>Add new tracks to your profile</p>
+        </div>
+
+        <div class="dashboard-action-btn" onclick="window.location.href='Artist_dashed/artist_fanbase.html'">
+            <i class="fas fa-users"></i>
+            <h3>Fan Engagement</h3>
+            <p>Connect with your audience</p>
+        </div>
+        
+    </div>
+</div>
+
+
+
+    
+    <div id="admin-dashboard" class="dashboard">
+        <div class="dashboard-header">
+            <div class="dashboard-icon" style="color: #3333ff;">
+                <i class="fas fa-admin-panel-settings"></i>
+            </div>
+            <h2 class="dashboard-title">Admin Dashboard</h2>
+            <p class="dashboard-subtitle">Platform Management Center</p>
+        </div>
+        
+        <div class="dashboard-actions">
+            <div class="dashboard-action-btn" onclick="window.location.href='Admin_dashed/artist_activation/mainadmin_dashed_activate_account.html'">
+                <i class="fas fa-user-check"></i>
+                <h3>Activate Artist Accounts</h3>
+                <p>Manage artist verification</p>
+            </div>
+
+            <div class="dashboard-action-btn" onclick="window.location.href='Admin_dashed/view_artist_perfomance/view_artist_perfomance.html'">
+                <i class="fas fa-analytics"></i>
+                <h3>View Artist Progress</h3>
+                <p>Monitor platform performance</p>
+            </div>
+
+            <div class="dashboard-action-btn" onclick="window.location.href='Admin_dashed/platform_management/platform_content_management.html'">
+                <i class="fas fa-cog"></i>
+                <h3>Manage Platform Content</h3>
+                <p>Curate featured content</p>
+            </div>
+            <div class="dashboard-action-btn" onclick="window.location.href='Admin_dashed/Security_Settings/Security_Settings.html'">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Security Settings</h3>
+                <p>Configure platform security</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Player -->
+         <div class="player-info">
+            <img src="https://via.placeholder.com/50x50/ff00cc/ffffff?text=DFIX" alt="Now Playing" class="player-album-art">
+            <div class="player-text">
+                <h4>Latest Hit Single</h4>
+                <p>DFIX DGXcore</p>
+            </div>
+         </div>
+    
+    <div class="player-container">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <div class="time">
+                <span>0:00</span>
+                <span>3:45</span>
+            </div>
+        </div>
+        
+        <div class="player-controls">
+            <button class="player-btn"><i class="fas fa-random"></i></button>
+            <button class="player-btn"><i class="fas fa-step-backward"></i></button>
+            <button class="player-btn play-pause"><i class="fas fa-play"></i></button>
+            <button class="player-btn"><i class="fas fa-step-forward"></i></button>
+            <button class="player-btn"><i class="fas fa-redo"></i></button>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+ <script>
+     document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("back") === "artist") {
+        // find the artist link
+        const artistLink = document.getElementById("artists-link");
+        if (artistLink) {
+            artistLink.click();  // simulate clicking it
+        }
+    }
+});
+
+     
+    // ===== AUTHENTICATION SYSTEM =====
+    const authOverlay = document.getElementById('auth-overlay');
+    const authDialog = document.getElementById('auth-dialog');
+    const mainContent = document.getElementById('main-content');
+    const artistDashboard = document.getElementById('artist-dashboard');
+    const adminDashboard = document.getElementById('admin-dashboard');
+    const loginBtn = document.getElementById('login-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const sidebarLoginBtn = document.getElementById('sidebar-login-btn');
+    const sidebarSignupBtn = document.getElementById('sidebar-signup-btn');
+
+    let currentAuthState = 'fans-login'; // fans-login, fans-signup, artist-login, admin-login
+    let isArtistLoggedIn = false;
+    let isAdminLoggedIn = false;
+
+    // Auth Templates
+    const authTemplates = {
+        'fans-login': `
+            <h2>Fans Login</h2>
+            <div class="auth-field">
+                <input type="email" id="fan-email" placeholder="Email">
+            </div>
+            <div class="auth-field">
+                <input type="password" id="fan-password" placeholder="Password">
+            </div>
+            <div class="auth-actions">
+                <button class="auth-switch" data-target="fans-signup">Switch to Sign Up</button>
+                <button class="auth-submit" onclick="loginFan()">Login</button>
+            </div>
+        `,
+
+        'fans-signup': `
+            <h2>Fans Sign Up</h2>
+            <div class="auth-field">
+                <input type="text" id="fan-username" placeholder="Username">
+            </div>
+            <div class="auth-field">
+                <input type="email" id="fan-signup-email" placeholder="Email">
+            </div>
+            <div class="auth-field">
+                <input type="password" id="fan-signup-password" placeholder="Password">
+            </div>
+            <div class="auth-actions">
+                <button class="auth-switch" data-target="fans-login">Switch to Login</button>
+                <button class="auth-submit" onclick="signupFan()">Sign Up</button>
+            </div>
+        `,
+
+        'artist-login': `
+            <h2>Artist Login</h2>
+            <div class="auth-field">
+                <input type="text" id="artist-name" placeholder="Name">
+            </div>
+            <div class="auth-field">
+                <input type="email" id="artist-email" placeholder="Email">
+            </div>
+            <div class="auth-field">
+                <input type="password" id="artist-passkey" placeholder="Pass Key">
+            </div>
+            <div class="auth-actions">
+                <button class="auth-switch" data-target="admin-login-step1">Switch to Admin</button>
+                <button class="auth-submit" onclick="loginArtist()">Login Artist</button>
+            </div>
+        `,
+
+        'admin-login-step1': `
+            <h2>Admin Login</h2>
+            <div class="auth-field">
+                <input type="text" id="admin-name" placeholder="Admin Name">
+            </div>
+            <div class="auth-field">
+                <input type="email" id="admin-email" placeholder="Admin Email">
+            </div>
+            <div class="auth-field">
+                <input type="password" id="admin-passkey" placeholder="Pass Key">
+            </div>
+            <div class="auth-actions">
+                <button class="auth-switch" data-target="artist-login">Switch to Artist</button>
+                <button class="auth-submit" onclick="adminLoginStep1()">Next Step</button>
+            </div>
+        `,
+
+        'admin-login-step2': `
+            <h2>Admin Security</h2>
+            <div class="auth-field">
+                <input type="password" id="admin-pass1" placeholder="Security Code 1">
+            </div>
+            <div class="auth-field">
+                <input type="password" id="admin-pass2" placeholder="Security Code 2">
+            </div>
+            <div class="auth-field">
+                <input type="password" id="admin-pass3" placeholder="Security Code 3">
+            </div>
+            <div class="auth-actions">
+                <button class="auth-switch" data-target="admin-login-step1">Back</button>
+                <button class="auth-submit" onclick="adminLoginStep2()">Login Admin</button>
+            </div>
+        `
+    };
+
+    // Show auth dialog
+    function showAuthDialog(state) {
+        currentAuthState = state;
+        authDialog.innerHTML = authTemplates[state];
+        authOverlay.classList.add('active');
+    }
+
+    // Hide auth dialog
+    function hideAuthDialog() {
+        authOverlay.classList.remove('active');
+    }
+
+    // Switch auth type
+    function switchAuthType(target) {
+        showAuthDialog(target);
+    }
+
+    // Show dashboard
+    function showDashboard(type) {
+        mainContent.style.display = 'none';
+        artistDashboard.classList.remove('active');
+        adminDashboard.classList.remove('active');
+
+        if (type === 'artist') {
+            artistDashboard.classList.add('active');
+            updateNavigationForDashboard('artist');
+        } else if (type === 'admin') {
+            adminDashboard.classList.add('active');
+            updateNavigationForDashboard('admin');
+        }
+    }
+
+    // Show main content
+    function showMainContent() {
+        mainContent.style.display = 'block';
+        artistDashboard.classList.remove('active');
+        adminDashboard.classList.remove('active');
+        updateNavigationForMain();
+    }
+
+   
+
+// Show main content
+function showMainContent() {
+    mainContent.style.display = 'block';
+    artistDashboard.classList.remove('active');
+    adminDashboard.classList.remove('active');
+    updateNavigationForMain(); // This line is crucial - it hides the back button
+}
+
+// Show main content
+function showMainContent() {
+    mainContent.style.display = 'block';
+    artistDashboard.classList.remove('active');
+    adminDashboard.classList.remove('active');
+    
+    // Remove back buttons completely instead of just hiding them
+    const backBtn = document.getElementById('back-to-main-btn');
+    const sidebarBackBtn = document.getElementById('sidebar-back-btn');
+    
+    if (backBtn) {
+        backBtn.remove();
+    }
+    
+    if (sidebarBackBtn) {
+        sidebarBackBtn.remove();
+    }
+    
+    // Show login/signup buttons and hamburger menu
+    loginBtn.style.display = 'block';
+    signupBtn.style.display = 'block';
+    hamburger.style.display = 'flex';
+    
+    // Show sidebar auth buttons
+    sidebarLoginBtn.style.display = 'block';
+    sidebarSignupBtn.style.display = 'block';
+}
+
+// Update navigation based on current state
+function updateNavigationForDashboard(userType) {
+    // Hide login/signup buttons
+    loginBtn.style.display = 'none';
+    signupBtn.style.display = 'none';
+    sidebarLoginBtn.style.display = 'none';
+    sidebarSignupBtn.style.display = 'none';
+    
+    // Hide hamburger menu in dashboard
+    hamburger.style.display = 'none';
+    
+    // Create back button if it doesn't exist
+    let backBtn = document.getElementById('back-to-main-btn');
+    let sidebarBackBtn = document.getElementById('sidebar-back-btn');
+    
+    if (!backBtn) {
+        backBtn = document.createElement('button');
+        backBtn.id = 'back-to-main-btn';
+        backBtn.className = 'btn btn-outline';
+        backBtn.style.marginRight = '15px';
+        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Back ';
+        backBtn.onclick = showMainContent;
+        
+        // Insert back button in the header before the hamburger menu
+        hamburger.parentNode.insertBefore(backBtn, hamburger);
+    } else {
+        backBtn.style.display = 'block';
+    }
+    
+    if (!sidebarBackBtn) {
+        sidebarBackBtn = document.createElement('a');
+        sidebarBackBtn.id = 'sidebar-back-btn';
+        sidebarBackBtn.href = '#';
+        sidebarBackBtn.style.display = 'block';
+        sidebarBackBtn.style.padding = '10px 0';
+        sidebarBackBtn.style.color = 'white';
+        sidebarBackBtn.style.textDecoration = 'none';
+        sidebarBackBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Back ';
+        sidebarBackBtn.onclick = function(e) {
+            e.preventDefault();
+            showMainContent();
+            closeSidebar();
+        };
+        
+        // Insert back button in the sidebar
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        sidebarNav.appendChild(sidebarBackBtn);
+    } else {
+        sidebarBackBtn.style.display = 'block';
+    }
+}
+
+
+
+function updateNavigationForMain() {
+    // Show login/signup buttons
+    loginBtn.style.display = 'block';
+    signupBtn.style.display = 'block';
+    sidebarLoginBtn.style.display = 'block';
+    sidebarSignupBtn.style.display = 'block';
+    
+    // Show hamburger menu on home page
+    hamburger.style.display = 'flex';
+    
+    // Hide back buttons
+    const backBtn = document.getElementById('back-to-main-btn');
+    const sidebarBackBtn = document.getElementById('sidebar-back-btn');
+    
+    if (backBtn) backBtn.style.display = 'none';
+    if (sidebarBackBtn) sidebarBackBtn.style.display = 'none';
+}
+function updateNavigationForMain() {
+    // Show login/signup buttons
+    loginBtn.style.display = 'block';
+    signupBtn.style.display = 'block';
+    sidebarLoginBtn.style.display = 'block';
+    sidebarSignupBtn.style.display = 'block';
+    
+    // Hide back buttons
+    const backBtn = document.getElementById('back-to-main-btn');
+    const sidebarBackBtn = document.getElementById('sidebar-back-btn');
+    
+    if (backBtn) backBtn.style.display = 'none';
+    if (sidebarBackBtn) sidebarBackBtn.style.display = 'none';
+}
+    function updateNavigationForMain() {
+        // Show login/signup buttons
+        loginBtn.style.display = 'block';
+        signupBtn.style.display = 'block';
+        sidebarLoginBtn.style.display = 'block';
+        sidebarSignupBtn.style.display = 'block';
+        
+        // Hide back buttons
+        const backBtnContainer = document.getElementById('back-btn-container');
+        const sidebarBackBtn = document.getElementById('sidebar-back-btn');
+        
+        if (backBtnContainer) backBtnContainer.style.display = 'none';
+        if (sidebarBackBtn) sidebarBackBtn.style.display = 'none';
+    }
+
+    // Auth event listeners
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('auth-switch')) {
+            switchAuthType(e.target.dataset.target);
+        }
+
+        // Close auth dialog when clicking outside
+        if (e.target === authOverlay) {
+            hideAuthDialog();
+        }
+    });
+
+    // Auth button event listeners
+    loginBtn.addEventListener('click', () => showAuthDialog('fans-login'));
+    signupBtn.addEventListener('click', () => showAuthDialog('fans-signup'));
+    sidebarLoginBtn.addEventListener('click', () => {
+        showAuthDialog('fans-login');
+        closeSidebar();
+    });
+    sidebarSignupBtn.addEventListener('click', () => {
+        showAuthDialog('fans-signup');
+        closeSidebar();
+    });
+
+    // ===== ARTIST OPTION FUNCTIONALITY =====
+    document.getElementById('artists-link').addEventListener('click', handleArtistOptionClick);
+    document.getElementById('sidebar-artists-link').addEventListener('click', function() {
+        handleArtistOptionClick();
+        closeSidebar();
+    });
+
+    function handleArtistOptionClick(e) {
+        if (e) e.preventDefault();
+
+        if (isArtistLoggedIn) {
+            showDashboard('artist');
+        } else if (isAdminLoggedIn) {
+            showDashboard('admin');
+        } else {
+            showAuthDialog('artist-login');
+        }
+    }
+
+    // Auth functions
+    function loginFan() {
+        const email = document.getElementById('fan-email').value;
+        const password = document.getElementById('fan-password').value;
+
+        if (email && password) {
+            hideAuthDialog();
+            showNotification('Fan logged in successfully!');
+        }
+    }
+
+    function signupFan() {
+        const username = document.getElementById('fan-username').value;
+        const email = document.getElementById('fan-signup-email').value;
+        const password = document.getElementById('fan-signup-password').value;
+
+        if (username && email && password) {
+            hideAuthDialog();
+            showNotification('Fan account created successfully!');
+        }
+    }
+
+    function loginArtist() {
+        const name = document.getElementById('artist-name').value;
+        const email = document.getElementById('artist-email').value;
+        const passkey = document.getElementById('artist-passkey').value;
+
+        if (name && email && passkey) {
+            hideAuthDialog();
+            showNotification('Artist logged in successfully!');
+            isArtistLoggedIn = true;
+            showDashboard('artist');
+        }
+    }
+
+    function adminLoginStep1() {
+        const name = document.getElementById('admin-name').value;
+        const email = document.getElementById('admin-email').value;
+        const passkey = document.getElementById('admin-passkey').value;
+
+        if (name && email && passkey) {
+            showAuthDialog('admin-login-step2');
+        }
+    }
+
+    function adminLoginStep2() {
+        const pass1 = document.getElementById('admin-pass1').value;
+        const pass2 = document.getElementById('admin-pass2').value;
+        const pass3 = document.getElementById('admin-pass3').value;
+
+        if (pass1 === '1111' && pass2 === '2222' && pass3 === '3333') {
+            hideAuthDialog();
+            showNotification('Admin logged in successfully!');
+            isAdminLoggedIn = true;
+            showDashboard('admin');
+        } else {
+            showNotification('Incorrect admin security codes', 'error');
+        }
+    }
+
+    // Add logout functionality
+    function logout() {
+        isArtistLoggedIn = false;
+        isAdminLoggedIn = false;
+        showMainContent();
+        showNotification('Logged out successfully');
+    }
+
+    // Show notification
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.position = 'fixed';
+        notification.style.bottom = '100px';
+        notification.style.left = '50%';
+        notification.style.transform = 'translateX(-50%)';
+        notification.style.padding = '12px 24px';
+        notification.style.borderRadius = '4px';
+        notification.style.zIndex = '2000';
+        notification.style.fontWeight = '600';
+
+        if (type === 'success') {
+            notification.style.background = 'linear-gradient(90deg, var(--primary), var(--secondary))';
+        } else {
+            notification.style.background = '#ff3333';
+        }
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 500);
+        }, 3000);
+    }
+
+    // ===== SIDEBAR NAVIGATION =====
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        hamburger.classList.toggle('open');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        hamburger.classList.remove('open');
+    }
+
+    hamburger.addEventListener('click', toggleSidebar);
+
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+
+    // ===== ARTIST CAROUSEL AND MUSIC FUNCTIONALITY =====
+    function createBubbles() {
+        const bubblesContainer = document.getElementById('bubbles');
+        const bubbleCount = 15;
+
+        for (let i = 0; i < bubbleCount; i++) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+
+            const size = Math.random() * 40 + 10;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+
+            bubble.style.left = `${Math.random() * 30 + 70}%`;
+
+            const duration = Math.random() * 10 + 10;
+            bubble.style.animationDuration = `${duration}s`;
+
+            bubble.style.animationDelay = `${Math.random() * 10}s`;
+
+            bubble.style.opacity = Math.random() * 0.3 + 0.1;
+
+            bubblesContainer.appendChild(bubble);
+        }
+    }
+    createBubbles();
+
+    // Audio Player Functionality
+    const playPauseBtn = document.querySelector('.play-pause');
+    const progressBar = document.querySelector('.progress');
+    let isPlaying = false;
+
+    playPauseBtn.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        playPauseBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+
+        if (isPlaying) {
+            simulateProgress();
+        }
+    });
+
+    function simulateProgress() {
+        let width = 0;
+        const interval = setInterval(() => {
+            if (width >= 100 || !isPlaying) {
+                clearInterval(interval);
+                if (width >= 100) {
+                    isPlaying = false;
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+                return;
+            }
+            width += 0.5;
+            progressBar.style.width = width + '%';
+
+            const currentTime = formatTime((width / 100) * 225);
+            document.querySelector('.time span:first-child').textContent = currentTime;
+        }, 100);
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // Artist and Content Data
+    const artistsData = {
+        "dfix-dgxcore": {
+            name: "DFIX DGXcore",
+            works: [
+                { id: "song1", title: "Neon Dreams", image: "https://via.placeholder.com/300x300/ff00cc/121212?text=Neon+Dreams", isFavorite: false },
+                { id: "song2", title: "Digital Heartbeat", image: "https://via.placeholder.com/300x300/3333ff/121212?text=Digital+Heartbeat", isFavorite: false },
+                { id: "song3", title: "Future Bass Drop", image: "https://via.placeholder.com/300x300/00ffcc/121212?text=Future+Bass", isFavorite: false },
+                { id: "song4", title: "Cyber Love", image: "https://via.placeholder.com/300x300/ff00cc/121212?text=Cyber+Love", isFavorite: false },
+                { id: "song5", title: "Electric Pulse", image: "https://via.placeholder.com/300x300/3333ff/121212?text=Electric+Pulse", isFavorite: false },
+                { id: "song6", title: "Midnight Synth", image: "https://via.placeholder.com/300x300/00ffcc/121212?text=Midnight+Synth", isFavorite: false }
+            ]
+        },
+        "artist1": {
+            name: "Artist 1",
+            works: [
+                { id: "a1song1", title: "Retro Wave", image: "https://via.placeholder.com/300x300/ff00cc/121212?text=Retro+Wave", isFavorite: false },
+                { id: "a1song2", title: "80s Dream", image: "https://via.placeholder.com/300x300/3333ff/121212?text=80s+Dream", isFavorite: false },
+                { id: "a1song3", title: "Night Drive", image: "https://via.placeholder.com/300x300/00ffcc/121212?text=Night+Drive", isFavorite: false }
+            ]
+        },
+        "artist2": {
+            name: "Artist 2",
+            works: [
+                { id: "a2song1", title: "Bass Drop", image: "https://via.placeholder.com/300x300/ff00cc/121212?text=Bass+Drop", isFavorite: false },
+                { id: "a2song2", title: "Wobble", image: "https://via.placeholder.com/300x300/3333ff/121212?text=Wobble", isFavorite: false },
+                { id: "a2song3", title: "Trap King", image: "https://via.placeholder.com/300x300/00ffcc/121212?text=Trap+King", isFavorite: false }
+            ]
+        },
+        "artist3": {
+            name: "Artist 3",
+            works: [
+                { id: "a3song1", title: "Sunset Memories", image: "https://via.placeholder.com/300x300/ff00cc/121212?text=Sunset+Memories", isFavorite: false },
+                { id: "a3song2", title: "Neon Lights", image: "https://via.placeholder.com/300x300/3333ff/121212?text=Neon+Lights", isFavorite: false },
+                { id: "a3song3", title: "Outrun", image: "https://via.placeholder.com/300x300/00ffcc/121212?text=Outrun", isFavorite: false }
+            ]
+        },
+        "artist4": {
+            name: "Artist 4",
+            works: [
+                { id: "a4song1", title: "Dubstep Dreams", image: "https://via.placeholder.com/300x300/ff00cc/121212?text=Dubstep+Dreams", isFavorite: false },
+                { id: "a4song2", title: "Heavy Bass", image: "https://via.placeholder.com/300x300/3333ff/121212?text=Heavy+Bass", isFavorite: false },
+                { id: "a4song3", title: "Wub Wub", image: "https://via.placeholder.com/300x300/00ffcc/121212?text=Wub+Wub", isFavorite: false }
+            ]
+        }
+    };
+
+    // DOM Elements
+    const artistItems = document.querySelectorAll('.artist-item');
+    const contentScroll = document.getElementById('content-scroll');
+    const favoritesScroll = document.getElementById('favorites-scroll');
+    const searchInput = document.getElementById('artist-search');
+
+    let currentArtist = "dfix-dgxcore";
+    loadContent(currentArtist);
+    updateFavorites();
+
+    // Artist carousel navigation
+    artistItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const artistId = item.dataset.artist;
+
+            artistItems.forEach(artist => {
+                artist.classList.remove('back-left', 'back-right', 'left', 'right', 'center');
+
+                if (artist === item) {
+                    artist.classList.add('center');
+                    currentArtist = artistId;
+                } else {
+                    const allArtists = Array.from(artistItems);
+                    const currentIndex = allArtists.indexOf(item);
+                    const artistIndex = allArtists.indexOf(artist);
+
+                    if (artistIndex === (currentIndex - 2 + allArtists.length) % allArtists.length) {
+                        artist.classList.add('back-left');
+                    } else if (artistIndex === (currentIndex - 1 + allArtists.length) % allArtists.length) {
+                        artist.classList.add('left');
+                    } else if (artistIndex === (currentIndex + 1) % allArtists.length) {
+                        artist.classList.add('right');
+                    } else if (artistIndex === (currentIndex + 2) % allArtists.length) {
+                        artist.classList.add('back-right');
+                    }
+                }
+            });
+
+            loadContent(artistId);
+        });
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        artistItems.forEach(item => {
+            const artistName = item.querySelector('.artist-name').textContent.toLowerCase();
+            if (artistName.includes(searchTerm)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Load content for selected artist
+    function loadContent(artistId) {
+        const artist = artistsData[artistId];
+        contentScroll.innerHTML = '';
+        
+        artist.works.forEach(work => {
+            const contentElement = document.createElement('div');
+            contentElement.className = 'content-item';
+            contentElement.dataset.songId = work.id;
+            contentElement.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="content-image">
+                <button class="favorite-btn ${work.isFavorite ? 'active' : ''}" data-song-id="${work.id}">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <div class="content-info">
+                    <div class="content-item-title">${work.title}</div>
+                    <div class="content-item-artist">${artist.name}</div>
+                </div>
+            `;
+            contentScroll.appendChild(contentElement);
+        });
+        
+        // Add event listeners to favorite buttons
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const songId = btn.dataset.songId;
+                toggleFavorite(songId);
+            });
+        });
+        
+        // Add event listeners to play songs
+        document.querySelectorAll('.content-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const songId = item.dataset.songId;
+                const song = findSongById(songId);
+                
+                if (song) {
+                    // Update player
+                    document.querySelector('.player-text h4').textContent = song.title;
+                    document.querySelector('.player-album-art').src = song.image;
+                    document.querySelector('.player-text p').textContent = artist.name;
+                    
+                    // Reset and play
+                    progressBar.style.width = '0%';
+                    document.querySelector('.time span:first-child').textContent = '0:00';
+                    isPlaying = true;
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    simulateProgress();
+                }
+            });
+        });
+    }
+
+    // Toggle favorite status
+    function toggleFavorite(songId) {
+        // Find the song in any artist's works
+        for (const artistId in artistsData) {
+            const artist = artistsData[artistId];
+            const song = artist.works.find(work => work.id === songId);
+            
+            if (song) {
+                song.isFavorite = !song.isFavorite;
+                
+                // Update button appearance
+                const favoriteBtn = document.querySelector(`.favorite-btn[data-song-id="${songId}"]`);
+                if (favoriteBtn) {
+                    favoriteBtn.classList.toggle('active', song.isFavorite);
+                }
+                
+                // Update favorites display
+                updateFavorites();
+                break;
+            }
+        }
+    }
+
+    // Find song by ID
+    function findSongById(songId) {
+        for (const artistId in artistsData) {
+            const artist = artistsData[artistId];
+            const song = artist.works.find(work => work.id === songId);
+            if (song) return song;
+        }
+        return null;
+    }
+
+    // Update favorites display
+    function updateFavorites() {
+        favoritesScroll.innerHTML = '';
+        
+        // Collect all favorite songs
+        const favoriteSongs = [];
+        for (const artistId in artistsData) {
+            const artist = artistsData[artistId];
+            artist.works.forEach(work => {
+                if (work.isFavorite) {
+                    favoriteSongs.push({...work, artist: artist.name});
+                }
+            });
+        }
+        
+        // Display favorites or message if none
+        if (favoriteSongs.length === 0) {
+            favoritesScroll.innerHTML = `
+                <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5);">
+                    You haven't added any favorites yet. Click the heart icon on any song to add it here.
+                </div>
+            `;
+        } else {
+            favoriteSongs.forEach(song => {
+                const contentElement = document.createElement('div');
+                contentElement.className = 'content-item';
+                contentElement.dataset.songId = song.id;
+                contentElement.innerHTML = `
+                    <img src="${song.image}" alt="${song.title}" class="content-image">
+                    <button class="favorite-btn active" data-song-id="${song.id}">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <div class="content-info">
+                        <div class="content-item-title">${song.title}</div>
+                        <div class="content-item-artist">${song.artist}</div>
+                    </div>
+                `;
+                favoritesScroll.appendChild(contentElement);
+            });
+            
+            // Add event listeners to favorite buttons in favorites section
+            document.querySelectorAll('#favorites-scroll .favorite-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const songId = btn.dataset.songId;
+                    toggleFavorite(songId);
+                });
+            });
+            
+            // Add event listeners to play songs from favorites
+            document.querySelectorAll('#favorites-scroll .content-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const songId = item.dataset.songId;
+                    const song = findSongById(songId);
+                    
+                    if (song) {
+                        // Find the artist name
+                        let artistName = "";
+                        for (const artistId in artistsData) {
+                            const artist = artistsData[artistId];
+                            if (artist.works.find(work => work.id === songId)) {
+                                artistName = artist.name;
+                                break;
+                            }
+                        }
+                        
+                        // Update player
+                        document.querySelector('.player-text h4').textContent = song.title;
+                        document.querySelector('.player-album-art').src = song.image;
+                        document.querySelector('.player-text p').textContent = artistName;
+                        
+                        // Reset and play
+                        progressBar.style.width = '0%';
+                        document.querySelector('.time span:first-child').textContent = '0:00';
+                        isPlaying = true;
+                        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        simulateProgress();
+                    }
+                });
+            });
+        }
+    }
+</script>
+</body>
+</html>

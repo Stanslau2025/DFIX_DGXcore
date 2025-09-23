@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFIX DGXcore - Upload New Track</title>
+    <style>
+        /* ===== Global Styles ===== */
+        :root {
+            --primary: #ff00cc;
+            --secondary: #3333ff;
+            --accent: #00ffcc;
+            --dark: #121212;
+            --light: #f8f8f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        /* ===== Gradient Text ===== */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        /* ===== Header/Navigation ===== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .back-btn {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: white;
+            color: var(--dark);
+        }
+        
+        /* ===== Dashboard Styles ===== */
+        .dashboard-container {
+            padding: 120px 5% 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .dashboard-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-subtitle {
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+        
+        /* ===== Upload Form ===== */
+        .upload-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+        .form-select{
+            color: white;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(255, 0, 204, 0.05);
+        }
+        
+        .upload-area i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .upload-text {
+            margin-bottom: 15px;
+        }
+        
+        .upload-hint {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+        
+        .file-info i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .file-details {
+            flex-grow: 1;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .file-remove {
+            color: #ff3366;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .form-submit {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+        }
+        
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 0, 204, 0.5);
+        }
+        
+        /* Platform Stats */
+        .platform-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stats-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .stats-title i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .audio-icon {
+            background: rgba(51, 51, 255, 0.2);
+            color: var(--secondary);
+        }
+        
+        .video-icon {
+            background: rgba(255, 0, 204, 0.2);
+            color: var(--primary);
+        }
+        
+        .stat-details {
+            flex-grow: 1;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Service Promotion */
+        .service-promo {
+            background: linear-gradient(135deg, rgba(255, 0, 204, 0.1), rgba(51, 51, 255, 0.1));
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 0, 204, 0.2);
+            display: flex;
+            align-items: center;
+        }
+        
+        .promo-icon {
+            font-size: 32px;
+            margin-right: 20px;
+            color: var(--accent);
+        }
+        
+        .promo-content {
+            flex-grow: 1;
+        }
+        
+        .promo-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .promo-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .promo-button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .promo-button:hover {
+            background: rgba(0, 255, 204, 0.1);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-promo {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .promo-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo gradient-text">DFIX DGXcore</div>
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+    </header>
+    
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title gradient-text">Upload New Track</h1>
+            <p class="dashboard-subtitle">Share your music with the world across all platforms</p>
+        </div>
+        
+        <!-- Upload Form -->
+        <div class="upload-form">
+            <h2 class="form-title"><i class="fas fa-upload"></i> Track Details</h2>
+            
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Track Title</label>
+                    <input type="text" class="form-input" placeholder="Enter track title">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Artist Name</label>
+                    <input type="text" class="form-input" value="DFIX DGXcore" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Genre</label>
+                    <select class="form-select">
+                        <option value="">  Select genre</option>
+                        <option value="electronic"  style="color: black;">Electronic</option>
+                        <option value="hiphop"   style="color: black;">Hip Hop</option>
+                        <option value="pop"  style="color: black;">Pop</option>
+                        <option value="rock"  style="color: black;">Rock</option>
+                        <option value="r&b"  style="color: black;">R&B</option>
+                        <option value="dance"   style="color: black;">Dance</option>
+                        <option value="reggae"  style="color: black;">Reggae</option>
+                        <option value="other"   style="color: black;">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" placeholder="Tell us about this track..."></textarea>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-music"></i> Audio File</h3>
+                
+                <div class="upload-area" id="audio-upload">
+                    <i class="fas fa-file-audio"></i>
+                    <div class="upload-text">Drag & drop your audio file here or click to browse</div>
+                    <div class="upload-hint">Supported formats: MP3, WAV, FLAC (Max 100MB)</div>
+                </div>
+                
+                <div id="audio-file-info" style="display: none;">
+                    <div class="file-info">
+                        <i class="fas fa-file-audio"></i>
+                        <div class="file-details">
+                            <div class="file-name">neon_dreams_final_mix.mp3</div>
+                            <div class="file-size">24.5 MB</div>
+                        </div>
+                        <div class="file-remove" onclick="removeFile('audio')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-video"></i> Video File (Optional)</h3>
+                
+                <div class="upload-area" id="video-upload">
+                    <i class="fas fa-file-video"></i>
+                    <div class="upload-text">Drag & drop your video file here or click to browse</div>
+                    <div class="upload-hint">Supported formats: MP4, MOV, AVI (Max 500MB)</div>
+                </div>
+                
+                <div id="video-file-info" style="display: none;">
+                    <div class="file-info">
+                        <i class="fas fa-file-video"></i>
+                        <div class="file-details">
+                            <div class="file-name">neon_dreams_music_video.mp4</div>
+                            <div class="file-size">178.2 MB</div>
+                        </div>
+                        <div class="file-remove" onclick="removeFile('video')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-image"></i> Cover Art</h3>
+                
+                <div class="upload-area" id="cover-upload">
+                    <i class="fas fa-file-image"></i>
+                    <div class="upload-text">Drag & drop your cover art here or click to browse</div>
+                    <div class="upload-hint">Supported formats: JPG, PNG (Min 3000x3000px, Max 10MB)</div>
+                </div>
+                
+                <div id="cover-file-info" style="display: none;">
+                    <div class="file-info">
+                        <i class="fas fa-file-image"></i>
+                        <div class="file-details">
+                            <div class="file-name">neon_dreams_cover.jpg</div>
+                            <div class="file-size">4.7 MB</div>
+                        </div>
+                        <div class="file-remove" onclick="removeFile('cover')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-share-alt"></i> Distribution Platforms</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Select platforms for distribution</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-spotify" checked>
+                            <span class="platform-icon">
+                                <i class="fab fa-spotify" style="color: #1DB954;"></i>
+                            </span>
+                            <label for="platform-spotify">Spotify</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-apple" checked>
+                            <span class="platform-icon">
+                                <i class="fab fa-apple" style="color: #000;"></i>
+                            </span>
+                            <label for="platform-apple">Apple Music</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-youtube" checked>
+                            <span class="platform-icon">
+                                <i class="fab fa-youtube" style="color: #FF0000;"></i>
+                            </span>
+                            <label for="platform-youtube">YouTube Music</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-amazon" checked>
+                            <span class="platform-icon">
+                                <i class="fab fa-amazon" style="color: #FF9900;"></i>
+                            </span>
+                            <label for="platform-amazon">Amazon Music</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-soundcloud" checked>
+                            <span class="platform-icon">
+                                <i class="fab fa-soundcloud" style="color: #FF7700;"></i>
+                            </span>
+                            <label for="platform-soundcloud">SoundCloud</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="platform-deezer" checked>
+                            <span class="platform-icon">
+                                <i class="fab fa-deezer" style="color: #00C7F2;"></i>
+                            </span>
+                            <label for="platform-deezer">Deezer</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="form-submit" onclick="uploadTrack()">
+                <i class="fas fa-cloud-upload-alt"></i> Upload & Distribute Track
+            </button>
+        </div>
+        
+        <!-- Platform Stats -->
+        <div class="platform-stats">
+            <h2 class="stats-title"><i class="fas fa-chart-bar"></i> Distribution Summary</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon audio-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="stat-details">
+                        <div class="stat-value" id="audio-platforms">6</div>
+                        <div class="stat-label">Platforms receiving audio</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-icon video-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="stat-details">
+                        <div class="stat-value" id="video-platforms">3</div>
+                        <div class="stat-label">Platforms receiving video</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Promotion -->
+        <div class="service-promo">
+            <div class="promo-icon">
+                <i class="fas fa-hands-helping"></i>
+            </div>
+            <div class="promo-content">
+                <div class="promo-title">Need Content Creation Help?</div>
+                <div class="promo-text">We can create lyric videos, visualizers, or professional cover art for your music.</div>
+                <a href="https://wa.me/1234567890?text=Hi%20DFIX%20DGXcore%20team,%20I%20need%20help%20with%20content%20creation" class="promo-button" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Contact us on WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Track uploaded successfully!</span>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        
+        // File upload simulation
+        const uploadAreas = document.querySelectorAll('.upload-area');
+        
+        uploadAreas.forEach(area => {
+            area.addEventListener('click', function() {
+                const type = this.id.split('-')[0];
+                simulateFileUpload(type);
+            });
+        });
+        
+        function simulateFileUpload(type) {
+            const fileInfo = document.getElementById(`${type}-file-info`);
+            fileInfo.style.display = 'block';
+            
+            // Update platform counts
+            updatePlatformStats();
+        }
+        
+        function removeFile(type) {
+            const fileInfo = document.getElementById(`${type}-file-info`);
+            fileInfo.style.display = 'none';
+            
+            // Update platform counts
+            updatePlatformStats();
+        }
+        
+        function updatePlatformStats() {
+            const audioUploaded = document.getElementById('audio-file-info').style.display !== 'none';
+            const videoUploaded = document.getElementById('video-file-info').style.display !== 'none';
+            const coverUploaded = document.getElementById('cover-file-info').style.display !== 'none';
+            
+            const audioPlatforms = document.getElementById('audio-platforms');
+            const videoPlatforms = document.getElementById('video-platforms');
+            
+            if (audioUploaded && coverUploaded) {
+                audioPlatforms.textContent = '6';
+            } else {
+                audioPlatforms.textContent = '0';
+            }
+            
+            if (videoUploaded) {
+                videoPlatforms.textContent = '3';
+            } else {
+                videoPlatforms.textContent = '0';
+            }
+        }
+        
+        // Platform selection
+        const platformCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+        platformCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updatePlatformStats();
+            });
+        });
+        
+        // Upload track
+        function uploadTrack() {
+            const audioUploaded = document.getElementById('audio-file-info').style.display !== 'none';
+            const coverUploaded = document.getElementById('cover-file-info').style.display !== 'none';
+            
+            if (!audioUploaded) {
+                showToast('Please upload an audio file');
+                return;
+            }
+            
+            if (!coverUploaded) {
+                showToast('Please upload cover art');
+                return;
+            }
+            
+            showToast('Track uploaded successfully! Distributing to platforms...');
+        }
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize
+        updatePlatformStats();
+    </script>
+</body>
+</html>

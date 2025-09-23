@@ -1,0 +1,336 @@
+
+/* Artist Gift Activation Section */
+#gift-activation .admin-form {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Emoji Inventory Section */
+/* 🎁 Artist Gift Activation Section */
+#gift-activation {
+    margin-top: 30px;
+    padding: 25px;
+    background: var(--dark);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#gift-activation .form-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Search Box */
+#gift-activation .form-group {
+    margin-bottom: 20px;
+}
+
+#gift-activation .info-search {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px 15px;
+}
+
+#gift-activation .info-search i {
+    color: rgba(255, 255, 255, 0.5);
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+#gift-activation .info-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-size: 15px;
+}
+
+/* Artist details box */
+#gift-artist-details {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 15px;
+    margin-bottom: 25px;
+    min-height: 60px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+}
+
+/* Emoji Inventory */
+.emoji-inventory-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.emoji-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.emoji-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 0, 204, 0.2);
+    border-color: var(--primary);
+}
+
+.emoji-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.emoji-details {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.emoji-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.emoji-value, .emoji-count {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 3px;
+}
+
+/* Buttons inside emoji cards */
+.emoji-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.emoji-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.btn-add {
+    background: var(--success);
+    color: white;
+}
+
+.btn-remove {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-send {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white;
+}
+
+.emoji-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 3000;
+}
+
+.toast.show {
+    opacity: 1;
+}
+/* Artist Select Modal */
+#artist-select-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    backdrop-filter: blur(6px);
+}
+
+#artist-select-modal .modal-content {
+    background: #1e1e1e;
+    padding: 22px 20px;
+    border-radius: 14px;
+    text-align: center;
+    width: 320px;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.65);
+    animation: fadeInScale 0.25s ease;
+}
+
+#artist-select-modal select {
+    width: 100%;
+    padding: 10px 14px;
+    margin: 18px 0;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s, background 0.2s;
+}
+
+#artist-select-modal select:focus {
+    border-color: #ffb347;
+    background: #333;
+}
+
+#artist-select-modal .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+#artist-select-modal .modal-actions button {
+    flex: 1;
+    margin: 0 6px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.25s, transform 0.15s;
+}
+
+#artist-select-modal .modal-actions button:first-child {
+    background: #444;
+    color: #fff;
+}
+
+#artist-select-modal .modal-actions button:first-child:hover {
+    background: #555;
+    transform: scale(1.03);
+}
+
+#artist-select-modal .modal-actions button:last-child {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: white;
+}
+
+#artist-select-modal .modal-actions button:last-child:hover {
+    background: var(--primary);
+    transform: scale(1.03);
+}
+
+/* Confirmation Modal */
+#confirm-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    backdrop-filter: blur(6px);
+}
+
+#confirm-modal .modal-content {
+    background: #1e1e1e;
+    padding: 22px 20px;
+    border-radius: 14px;
+    text-align: center;
+    width: 320px;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.65);
+    animation: fadeInScale 0.25s ease;
+}
+
+#confirm-modal .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+#confirm-modal .modal-actions button {
+    flex: 1;
+    margin: 0 6px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.25s, transform 0.15s;
+}
+
+#confirm-modal .modal-actions button:first-child {
+    background: #444;
+    color: #fff;
+}
+
+#confirm-modal .modal-actions button:first-child:hover {
+    background: #555;
+    transform: scale(1.03);
+}
+
+#confirm-modal .modal-actions button:last-child {
+    background: #e429b5;
+    color: #000;
+}
+
+#confirm-modal .modal-actions button:last-child:hover {
+       background: var(--primary);
+       transform: scale(1.03);
+}
+
+/* Animation */
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+
+
+
+
+
